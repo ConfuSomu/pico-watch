@@ -10,6 +10,7 @@
 #define SDA_PIN 6
 #define SCL_PIN 7
 #define RESET_PIN -1
+#define OLED_DEFAULT_CONTRAST 40
 SSOLED oled;
 // Unused but useful for reference:
 #define OLED_WIDTH 128
@@ -19,7 +20,7 @@ SSOLED oled;
 void init_display() {
     oledInit(&oled, OLED_128x64, 0x3d, 0, 0, 1, SDA_PIN, SCL_PIN, RESET_PIN, 1000000L);
     oledFill(&oled, 0,1);
-    oledSetContrast(&oled, 127);
+    oledSetContrast(&oled, OLED_DEFAULT_CONTRAST);
     //oledSetTextWrap(&oled, true);
 }
 
@@ -80,8 +81,7 @@ void show_datetime() {
     oledWriteString(&oled, 0,0,7, datetime_str, FONT_8x8, 0, 1);
 }
 
-int main()
-{
+int main() {
     stdio_init_all();
     init_display();
     init_rtc();
