@@ -27,9 +27,10 @@ add_library(Oled
 target_link_libraries(Oled pico_stdlib hardware_i2c)
 
 # Main code
-#add_executable(pico-watch pico-watch.c )
 add_executable(pico-watch
 	pico-watch.c
+        init.c
+        init.h
 	)
 
 pico_set_program_name(pico-watch "pico-watch")
