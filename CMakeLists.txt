@@ -17,33 +17,33 @@ project(pico-watch C CXX)
 # Initialise the Pico SDK
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
+# Add OLED library
+add_library(Oled
+        oled/BitBang_I2C.c
+                oled/BitBang_I2C.h
+	oled/ss_oled.c
+                oled/ss_oled.h
+        )
+target_link_libraries(Oled pico_stdlib hardware_i2c)
 
+# Main code
 #add_executable(pico-watch pico-watch.c )
 add_executable(pico-watch
 	pico-watch.c
-	BitBang_I2C.c
-        BitBang_I2C.h
-	ss_oled.c
-        ss_oled.h
 	)
-
 
 pico_set_program_name(pico-watch "pico-watch")
 pico_set_program_version(pico-watch "0.1")
-
-pico_enable_stdio_uart(pico-watch 0)
-pico_enable_stdio_usb(pico-watch 1)
+pico_enable_stdio_uart(pico-watch 1)
 
 # Add the standard library to the build
 target_link_libraries(pico-watch pico_stdlib)
 
 # Add any user requested libraries
 target_link_libraries(pico-watch
-        hardware_i2c
-        hardware_timer
-        hardware_clocks
+        Oled
+        hardware_rtc
+#        hardware_clocks
         )
 
 pico_add_extra_outputs(pico-watch)
-
