@@ -36,13 +36,24 @@ void init_rtc() {
     rtc_set_datetime(&init_date);
 }
 
+// Time as string
+// Adapted from pico-sdk/scr/common/pico_util/datetime.c
+void time_as_str(char *buf, uint buf_size, const datetime_t *t) {
+    snprintf(buf,
+             buf_size,
+             "%d:%02d:%02d",
+             t->hour,
+             t->min,
+             t->sec);
+};
+
 void show_datetime() {
     char datetime_buf[256];
     char *datetime_str = &datetime_buf[0];
     datetime_t t;
 
     rtc_get_datetime(&t);
-    datetime_to_str(datetime_str, sizeof(datetime_buf), &t);
+    time_as_str(datetime_str, sizeof(datetime_buf), &t);
     oledWriteString(&oled, 0,10,3, datetime_str, FONT_12x16, 0, 1);
 }
 
