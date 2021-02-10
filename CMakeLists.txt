@@ -31,7 +31,10 @@ add_executable(pico-watch
 	pico-watch.c
         init.c
         init.h
+        buttons.c
+        buttons.h
         apps/main_clock.c
+        apps/main_clock.h
 	)
 
 pico_set_program_name(pico-watch "pico-watch")

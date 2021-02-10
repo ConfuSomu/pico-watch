@@ -10,6 +10,7 @@ void show_datetime(SSOLED *oled);
 
 int main_clock_init(SSOLED *oled, char *data, uint data_size);
 int main_clock_render(SSOLED *oled, char *data, uint data_size);
+int main_clock_btnpressed(SSOLED *oled, char *data, uint data_size, uint gpio);
 int main_clock_bgrefresh(SSOLED *oled, char *data, uint data_size);
 int main_clock_destroy(SSOLED *oled, char *data, uint data_size);
 

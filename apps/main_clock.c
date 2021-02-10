@@ -5,6 +5,7 @@
 #include "../oled/ss_oled.h"
 
 #include "main_clock.h"
+#include "../buttons.h"
 
 // Time as string
 // Adapted from pico-sdk/scr/common/pico_util/datetime.c
@@ -51,15 +52,33 @@ void show_datetime(SSOLED *oled) {
 }
 
 int main_clock_render(SSOLED *oled, char *data, uint data_size) {
+    oledWriteString(oled, 0,15,0, (char *)"Test clock", FONT_8x8, 0, 1);
     show_datetime(oled);
-//    data[1] += 1; // testing
-//    oledWriteString(oled, 0,0,2, &data[0], FONT_6x8, 0, 1);
+    oledWriteString(oled, 0,0,0, &data[0], FONT_6x8, 0, 1);
+    return 0;
+}
+
+// Example of how button inputs could be interpreted.
+// Drawing on screen should be done in the render function.
+int main_clock_btnpressed(SSOLED *oled, char *data, uint data_size, uint gpio) {
+    switch (gpio) {
+        case BUTTON_HOME: // Apps will generally not receive the Home button press
+            data[0] = 'H'; break;
+        case BUTTON_SELECT:
+            data[0] = 'S'; break;
+        case BUTTON_MODE:
+            data[0] = 'M'; break;
+        case BUTTON_DOWN:
+            data[0] = 'D'; break;
+        case BUTTON_UP:
+            data[0] = 'U'; break;
+        default:
+            data[0] = '?';
+    }
     return 0;
 }
 
 int main_clock_init(SSOLED *oled, char *data, uint data_size) {
-//    data[0] = 'a'; // testing, to showcase the use of data
-//    data[1] = 'b';
     return 1; // return 1 when function not implemented
 }
 
