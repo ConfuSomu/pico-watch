@@ -51,6 +51,7 @@ void show_datetime(SSOLED *oled) {
     oledWriteString(oled, 0,0,7, datetime_str, FONT_8x8, 0, 1);
 }
 
+// Rendering of the app
 int main_clock_render(SSOLED *oled, char *data, uint data_size) {
     oledWriteString(oled, 0,15,0, (char *)"Test clock", FONT_8x8, 0, 1);
     show_datetime(oled);
@@ -78,14 +79,17 @@ int main_clock_btnpressed(SSOLED *oled, char *data, uint data_size, uint gpio) {
     return 0;
 }
 
+// Initlisation of the app.
 int main_clock_init(SSOLED *oled, char *data, uint data_size) {
     return 1; // return 1 when function not implemented
 }
 
-int main_clock_bgrefresh(SSOLED *oled, char *data, uint data_size) {
+// Processor intensive operations and functions related to drawing to the screen should only be done when the app is in_foreground(=1). This function is only called when the app is init.
+int main_clock_bgrefresh(SSOLED *oled, char *data, uint data_size, char in_foreground) {
     return 1;
 }
 
+// Destruction of app, deinitlisation should be done here. This is only called if the app's APPS_DESTROY_ON_EXIT is set to 1. When it is not a "service" app.
 int main_clock_destroy(SSOLED *oled, char *data, uint data_size) {
     return 1;
 }

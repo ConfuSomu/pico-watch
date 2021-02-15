@@ -2,7 +2,9 @@
 #include "pico/stdlib.h"
 
 #include "buttons.h"
+// From pico-watch.c:
 extern int app_btnpressed(int app_id, uint gpio);
+extern void app_switch(int old_appid, int new_appid);
 extern int current_app;
 
 // Debounce control
@@ -15,7 +17,11 @@ const int button_delayTime = 50; // 50ms worked fine for me .... change it to yo
 
 void gpio_interrupt_cb(uint gpio, uint32_t events) {
     if ((to_ms_since_boot(get_absolute_time())-button_time)>button_delayTime) {
-        app_btnpressed(current_app, gpio);
+        if (gpio == BUTTON_HOME && (current_app != 0)) // Home app
+            app_switch(current_app, 0);
+        else
+            app_btnpressed(current_app, gpio);
+        
         button_time = to_ms_since_boot(get_absolute_time());
     }
 }
@@ -38,7 +44,7 @@ void init_buttons() {
     gpio_set_irq_enabled_with_callback(BUTTON_UP, GPIO_IRQ_EDGE_FALL , true, &gpio_interrupt_cb);
 
     /* For some reason for loop does not work… TODO
-    for (int i=0; i == NUMBER_OF_BUTTONS; i++) {
+    for (int i=0; i < NUMBER_OF_BUTTONS; i++) {
         uint button = BUTTON_PINS[i];
         gpio_init(button);
         gpio_pull_up(button);

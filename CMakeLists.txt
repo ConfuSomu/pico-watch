@@ -33,6 +33,8 @@ add_executable(pico-watch
         init.h
         buttons.c
         buttons.h
+        apps/home_menu.c
+        apps/home_menu.h
         apps/main_clock.c
         apps/main_clock.h
 	)
