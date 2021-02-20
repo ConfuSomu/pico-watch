@@ -16,6 +16,8 @@ extern bool rtc_get_datetime(datetime_t *t);
 
 namespace app_home_menu {
     const char* APPS_NAME[NUMBER_OF_APPS][12] = {"Home", "Clock"};
+    char *pressed_button;
+    int *selected_app;
 
     void title_str(char *buf, uint buf_size, const datetime_t *t) {
         snprintf(buf,
@@ -38,56 +40,60 @@ namespace app_home_menu {
     }
 
     // Rendering of app
-    int render(SSOLED *oled, char *data, uint data_size) {
+    int render(SSOLED *oled) {
         show_title(oled);
-        oledWriteString(oled, 0,0,2, &data[0], FONT_6x8, 0, 1);
-        oledWriteString(oled, 0,5,3, const_cast<char*>(APPS_NAME[data[1]][0]), FONT_12x16, 0, 1); // FIXME: The name does not update, it seems that the second string is empty… but data[1]'s content is correct, as BUTTON_SELECT switches to the correct app.
+        oledWriteString(oled, 0,0,2, pressed_button, FONT_6x8, 0, 1);
+        oledWriteString(oled, 0,5,3, const_cast<char*>(APPS_NAME[0][*selected_app]), FONT_12x16, 0, 1);
         return 0;
     }
 
-    // Interpret button inputs
-    int btnpressed(SSOLED *oled, char *data, uint data_size, uint gpio) {
+    // Example of how button inputs could be interpreted.
+    // Drawing on screen should be done in the render function.
+    int btnpressed(SSOLED *oled, uint gpio) {
         switch (gpio) {
             case BUTTON_HOME:
-                data[0] = 'H'; break;
+                *pressed_button = 'H'; break;
             case BUTTON_SELECT:
-                data[0] = 'S';
-                app_switch(0, data[1]);
+                *pressed_button = 'S';
+                app_switch(0, *selected_app);
                 break;
             case BUTTON_MODE:
-                data[0] = 'M'; break;
+                *pressed_button = 'M'; break;
             case BUTTON_DOWN:
-                data[0] = 'D';
-                data[1]--;
+                *pressed_button = 'D';
+                *selected_app--;
                 break;
             case BUTTON_UP:
-                data[0] = 'U';
-                data[1]++;
+                *pressed_button = 'U';
+                *selected_app++;
                 break;
             default:
-                data[0] = '?';
+                *pressed_button = '?';
         }
-        if (data[1] > NUMBER_OF_APPS-1) {
-            data[1] = NUMBER_OF_APPS-1; data[0] = '>';
-        } else if (data[1] < NUMBER_OF_APPS-1) {
-            data[1] = 0; data[0] = '<';
+        if (*selected_app > NUMBER_OF_APPS-1) {
+            *selected_app = NUMBER_OF_APPS-1; *pressed_button = '>';
+        } else if (*selected_app < NUMBER_OF_APPS-1) {
+            *selected_app = 0; *pressed_button = '<';
         }
         return 0;
     }
 
     // Initlisation of the app.
-    int init(SSOLED *oled, char *data, uint data_size) {
-        data[1] = 0;
+    int init(SSOLED *oled) {
+        pressed_button = new char;  *pressed_button = '*';
+        selected_app = new int;
         return 0; // return 1 when function not implemented
     }
 
     // Processor intensive operations and functions related to drawing to the screen should only be done when the app is in_foreground(=1). This function is only called when the app is init.
-    int bgrefresh(SSOLED *oled, char *data, uint data_size, char in_foreground) {
+    int bgrefresh(SSOLED *oled, char in_foreground) {
         return 1;
     }
 
     // Destruction of app, deinitlisation should be done here. This is only called if the app's APPS_DESTROY_ON_EXIT is set to 1. When it is not a "service" app.
-    int destroy(SSOLED *oled, char *data, uint data_size) {
+    int destroy(SSOLED *oled) {
+        delete pressed_button; pressed_button = nullptr;
+        delete selected_app; selected_app = nullptr;
         return 1;
     }
 }
