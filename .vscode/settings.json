@@ -18,5 +18,6 @@
     },
     "cmake.buildBeforeRun": true,
     // This may need to be arm-none-eabi-gdb depending on your system
-    "cortex-debug.gdbPath": "gdb-multiarch"
+    "cortex-debug.gdbPath": "gdb-multiarch",
+    "C_Cpp.errorSquiggles": "Disabled"
 }

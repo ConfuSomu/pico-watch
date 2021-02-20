@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "~/pico/pico-sdk/**",
+                "/home/pi/pico/pico-sdk/**",
                 "/home/pi/pico/pico-sdk/src/common/pico_stdlib/include"
             ],
             "defines": [],
