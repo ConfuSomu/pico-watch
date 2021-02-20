@@ -5,20 +5,20 @@
 #include "pico/util/datetime.h"
 #include "oled/ss_oled.h"
 
-#include "init.h"
-#include "buttons.h"
-#include "apps/main_clock.h"
-#include "apps/home_menu.h"
+#include "init.hpp"
+#include "buttons.hpp"
+#include "apps/main_clock.hpp"
+#include "apps/home_menu.hpp"
 
 int current_app = 0;
 
 #define NUMBER_OF_APPS 2
 #define APP_DATA_BUFFER_LEN 256
-int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {home_menu_init, main_clock_init};
-int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {home_menu_render, main_clock_render};
-int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size, uint gpio) = {home_menu_btnpressed, main_clock_btnpressed};
-int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size, char in_foreground) = {home_menu_bgrefresh, main_clock_bgrefresh};
-int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {home_menu_destroy, main_clock_destroy};
+int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::init, main_clock_init};
+int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::render, main_clock_render};
+int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size, uint gpio) = {app_home_menu::btnpressed, main_clock_btnpressed};
+int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size, char in_foreground) = {app_home_menu::bgrefresh, main_clock_bgrefresh};
+int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::destroy, main_clock_destroy};
 char APPS_DATA[NUMBER_OF_APPS][APP_DATA_BUFFER_LEN];
 int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1};
 int APPS_IS_INIT[NUMBER_OF_APPS] = {0, 0}; // Only run in background if init

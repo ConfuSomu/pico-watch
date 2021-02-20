@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+extern "C" {
 #include "hardware/rtc.h"
+}
 #include "pico/util/datetime.h"
 #include "../oled/ss_oled.h"
 
-#include "main_clock.h"
-#include "../buttons.h"
+#include "main_clock.hpp"
+#include "../buttons.hpp"
 
 // Time as string
 // Adapted from pico-sdk/scr/common/pico_util/datetime.c

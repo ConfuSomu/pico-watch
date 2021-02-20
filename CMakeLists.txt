@@ -28,15 +28,15 @@ target_link_libraries(Oled pico_stdlib hardware_i2c)
 
 # Main code
 add_executable(pico-watch
-	pico-watch.c
-        init.c
-        init.h
-        buttons.c
-        buttons.h
-        apps/home_menu.c
-        apps/home_menu.h
-        apps/main_clock.c
-        apps/main_clock.h
+	pico-watch.cpp
+        init.cpp
+        init.hpp
+        buttons.cpp
+        buttons.hpp
+        apps/home_menu.cpp
+        apps/home_menu.hpp
+        apps/main_clock.cpp
+        apps/main_clock.hpp
 	)
 
 pico_set_program_name(pico-watch "pico-watch")

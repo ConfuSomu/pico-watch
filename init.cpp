@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
+extern "C" {
 #include "hardware/rtc.h"
+}
 #include "oled/ss_oled.h"
 
-#include "init.h"
+#include "init.hpp"
+SSOLED oled;
 
 void init_display() {
     oledInit(&oled, OLED_128x64, 0x3d, 0, 0, 1, SDA_PIN, SCL_PIN, RESET_PIN, 1000000L);

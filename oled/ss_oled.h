@@ -1,5 +1,8 @@
 #ifndef __SS_OLED_H__
 #define __SS_OLED_H__
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "BitBang_I2C.h"
 
@@ -206,6 +209,7 @@ void oledRectangle(SSOLED *pOLED, int x1, int y1, int x2, int y2, uint8_t ucColo
 #if defined(_LINUX_) && defined(__cplusplus)
 }
 #endif // _LINUX_
-
+#ifdef __cplusplus
+}
+#endif
 #endif // __SS_OLED_H__
-

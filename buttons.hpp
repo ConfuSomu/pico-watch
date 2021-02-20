@@ -10,8 +10,6 @@
 #define BUTTON_MODE 19
 #define BUTTON_DOWN 20
 #define BUTTON_UP 21
-unsigned long button_time;
-const int button_delayTime;
 
 void init_buttons();
 void gpio_interrupt_cb(uint gpio, uint32_t events);

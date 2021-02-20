@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
-#include "buttons.h"
+#include "buttons.hpp"
 // From pico-watch.c:
 extern int app_btnpressed(int app_id, uint gpio);
 extern void app_switch(int old_appid, int new_appid);
