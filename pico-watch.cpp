@@ -14,11 +14,11 @@ int current_app = 0;
 
 #define NUMBER_OF_APPS 2
 #define APP_DATA_BUFFER_LEN 256
-int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::init, main_clock_init};
-int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::render, main_clock_render};
-int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size, uint gpio) = {app_home_menu::btnpressed, main_clock_btnpressed};
-int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size, char in_foreground) = {app_home_menu::bgrefresh, main_clock_bgrefresh};
-int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::destroy, main_clock_destroy};
+int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::init, app_main_clock::init};
+int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::render, app_main_clock::render};
+int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size, uint gpio) = {app_home_menu::btnpressed, app_main_clock::btnpressed};
+int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size, char in_foreground) = {app_home_menu::bgrefresh, app_main_clock::bgrefresh};
+int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(SSOLED *oled, char *data, uint data_size) = {app_home_menu::destroy, app_main_clock::destroy};
 char APPS_DATA[NUMBER_OF_APPS][APP_DATA_BUFFER_LEN];
 int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1};
 int APPS_IS_INIT[NUMBER_OF_APPS] = {0, 0}; // Only run in background if init
