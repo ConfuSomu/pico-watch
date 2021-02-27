@@ -33,6 +33,8 @@ add_executable(pico-watch
         init.hpp
         buttons.cpp
         buttons.hpp
+        api.cpp
+        api.hpp
         apps/home_menu.cpp
         apps/home_menu.hpp
         apps/main_clock.cpp

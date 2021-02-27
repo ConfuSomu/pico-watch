@@ -4,12 +4,14 @@
 #include "pico/util/datetime.h"
 #include "../oled/ss_oled.h"
 
+#include "../api.hpp"
+
 namespace app_main_clock {
-    int init(SSOLED *oled);
-    int render(SSOLED *oled);
-    int btnpressed(SSOLED *oled, uint gpio);
-    int bgrefresh(SSOLED *oled, char in_foreground);
-    int destroy(SSOLED *oled);
+    int init(Api *app_api);
+    int render(Api *app_api);
+    int btnpressed(Api *app_api, uint gpio);
+    int bgrefresh(Api *app_api, char in_foreground);
+    int destroy(Api *app_api);
 }
 
 #endif
