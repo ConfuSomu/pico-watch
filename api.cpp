@@ -23,14 +23,14 @@ void Api::init_display() {
     //oledSetTextWrap(&oled, true);
 }
 
-int Api::dispWriteString(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender) {
+int Api::display_write_string(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender) {
     return oledWriteString(&m_oled, iScrollX, x, y, szMsg, iSize, bInvert, bRender);
 }
 
-void Api::dispFill(unsigned char ucData, int bRender) {
+void Api::display_fill(unsigned char ucData, int bRender) {
     oledFill(&m_oled, ucData, bRender);
 }
 
-bool Api::getDatetime(datetime_t *t) {
+bool Api::datetime_get(datetime_t *t) {
     return rtc_get_datetime(t);
 }

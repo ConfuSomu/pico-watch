@@ -39,22 +39,22 @@ namespace app_main_clock {
         char datetime_buf[256];
         char *datetime_str = &datetime_buf[0];
         datetime_t t;
-        app_api->getDatetime(&t);
+        app_api->datetime_get(&t);
 
         // time
         time_as_str(datetime_str, sizeof(datetime_buf), &t);
-        app_api->dispWriteString(0,10,3, datetime_str, FONT_12x16, 0, 1);
+        app_api->display_write_string(0,10,3, datetime_str, FONT_12x16, 0, 1);
 
         // date
         date_as_str(datetime_str, sizeof(datetime_buf), &t);
-        app_api->dispWriteString(0,0,7, datetime_str, FONT_8x8, 0, 1);
+        app_api->display_write_string(0,0,7, datetime_str, FONT_8x8, 0, 1);
     }
 
     // Rendering of the app
     int render(Api *app_api) {
-        app_api->dispWriteString(0,15,0, (char *)"Test clock", FONT_8x8, 0, 1);
+        app_api->display_write_string(0,15,0, (char *)"Test clock", FONT_8x8, 0, 1);
         show_datetime(app_api);
-        //app_api->dispWriteString(0,0,0, &data[0], FONT_6x8, 0, 1);
+        //app_api->display_write_string(0,0,0, &data[0], FONT_6x8, 0, 1);
         return 0;
     }
 

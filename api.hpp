@@ -11,9 +11,9 @@ class Api {
         void init_display();
     public:
         void init();
-        int dispWriteString(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender);
-        void dispFill(unsigned char ucData, int bRender);
-        bool getDatetime(datetime_t *t);
+        int display_write_string(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender);
+        void display_fill(unsigned char ucData, int bRender);
+        bool datetime_get(datetime_t *t);
 };
 
 #endif

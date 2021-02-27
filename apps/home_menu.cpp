@@ -28,18 +28,18 @@ namespace app_home_menu {
         char datetime_buf[256];
         char *datetime_str = &datetime_buf[0];
         datetime_t t;
-        app_api->getDatetime(&t);
+        app_api->datetime_get(&t);
 
         // title with time
         title_str(datetime_str, sizeof(datetime_buf), &t);
-        app_api->dispWriteString(0,0,0, datetime_str, FONT_8x8, 0, 1);
+        app_api->display_write_string(0,0,0, datetime_str, FONT_8x8, 0, 1);
     }
 
     // Rendering of app
     int render(Api *app_api) {
         show_title(app_api);
-        app_api->dispWriteString(0,0,2, pressed_button, FONT_6x8, 0, 1);
-        app_api->dispWriteString(0,5,3, APPS_NAME[*selected_app], FONT_12x16, 0, 1);
+        app_api->display_write_string(0,0,2, pressed_button, FONT_6x8, 0, 1);
+        app_api->display_write_string(0,5,3, APPS_NAME[*selected_app], FONT_12x16, 0, 1);
         return 0;
     }
 

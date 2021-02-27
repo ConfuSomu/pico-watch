@@ -24,7 +24,7 @@ int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1};
 int APPS_IS_INIT[NUMBER_OF_APPS] = {0, 0}; // Only run in background if init
 
 int app_init(int app_id) {
-    app_api.dispFill(0,1); // Clear OLED
+    app_api.display_fill(0,1); // Clear OLED
     if (!APPS_IS_INIT[app_id]) {
         APPS_IS_INIT[app_id] = 1;
         return (*APPS_FUNC_INIT[app_id])(&app_api);
