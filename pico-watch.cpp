@@ -3,7 +3,6 @@
 #include "hardware/i2c.h"
 #include "hardware/rtc.h"
 #include "pico/util/datetime.h"
-#include "oled/ss_oled.h"
 
 #include "init.hpp"
 #include "api.hpp"

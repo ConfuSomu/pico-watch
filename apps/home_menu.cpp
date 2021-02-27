@@ -4,7 +4,6 @@ extern "C" {
 #include "hardware/rtc.h"
 }
 #include "pico/util/datetime.h"
-#include "../oled/ss_oled.h"
 
 #include "home_menu.hpp"
 #include "../api.hpp"

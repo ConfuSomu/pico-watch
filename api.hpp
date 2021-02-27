@@ -1,7 +1,6 @@
 #ifndef __API_H__
 #define __API_H__
 
-#include "pico/util/datetime.h"
 #include "oled/ss_oled.h"
 
 class Api {
