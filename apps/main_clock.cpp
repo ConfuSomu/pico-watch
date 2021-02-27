@@ -1,9 +1,5 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-extern "C" {
-#include "hardware/rtc.h"
-}
-#include "pico/util/datetime.h"
 
 #include "main_clock.hpp"
 #include "../api.hpp"
@@ -43,7 +39,7 @@ namespace app_main_clock {
         char datetime_buf[256];
         char *datetime_str = &datetime_buf[0];
         datetime_t t;
-        rtc_get_datetime(&t);
+        app_api->getDatetime(&t);
 
         // time
         time_as_str(datetime_str, sizeof(datetime_buf), &t);

@@ -1,9 +1,5 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-extern "C" {
-#include "hardware/rtc.h"
-}
-#include "pico/util/datetime.h"
 
 #include "home_menu.hpp"
 #include "../api.hpp"
@@ -32,7 +28,7 @@ namespace app_home_menu {
         char datetime_buf[256];
         char *datetime_str = &datetime_buf[0];
         datetime_t t;
-        rtc_get_datetime(&t);
+        app_api->getDatetime(&t);
 
         // title with time
         title_str(datetime_str, sizeof(datetime_buf), &t);

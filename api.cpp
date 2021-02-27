@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+extern "C" {
+#include "hardware/rtc.h"
+}
+#include "pico/util/datetime.h"
 #include "oled/ss_oled.h"
 
 #include "api.hpp"
@@ -25,4 +29,8 @@ int Api::dispWriteString(int iScrollX, int x, int y, char *szMsg, int iSize, int
 
 void Api::dispFill(unsigned char ucData, int bRender) {
     oledFill(&m_oled, ucData, bRender);
+}
+
+bool Api::getDatetime(datetime_t *t) {
+    return rtc_get_datetime(t);
 }
