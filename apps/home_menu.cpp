@@ -81,8 +81,8 @@ namespace app_home_menu {
 
     // Initlisation of the app.
     int init(Api *app_api) {
-        pressed_button = new char;  *pressed_button = '*';
-        selected_app = new int;
+        pressed_button = new char; *pressed_button = '*';
+        selected_app = new int; *selected_app = 0; // Make sure to init the values to something known!
         return 0; // return 1 when function not implemented
     }
 
