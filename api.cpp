@@ -3,8 +3,6 @@
 extern "C" {
 #include "hardware/rtc.h"
 }
-#include "pico/util/datetime.h"
-#include "oled/ss_oled.h"
 
 #include "api.hpp"
 #include "init.hpp"
@@ -52,6 +50,35 @@ void Api::display_write_buffer(uint8_t *pBuffer) {
 
 int Api::display_write_pixel(int x, int y, unsigned char ucColor, int bRender) {
     return oledSetPixel(&m_oled, x, y, ucColor, bRender);
+}
+
+bool Api::gui_popup_text(std::string title, std::string body){
+#define CHARS_PER_LINE 13
+    oledRectangle(&m_oled, 9,7, 119,63, 0, 1); // Background
+    oledRectangle(&m_oled, 9,7, 119,63, 1, 0); // Popup border
+    oledRectangle(&m_oled, 9,7, 119,16, 1, 1); // Title background
+    oledDumpBuffer(&m_oled, m_ucBuffer); // Display rectangle
+
+    // Truncate longer strings to avoid wasting time in for loop and drawing on OLED
+    if (title.size() > 13)
+        title.resize(13);
+    if (body.size() > 78)
+        body.resize(78);
+
+    // Make body fit by adding '\n' at a regular interval
+    int since_nl = 0; // Characters since newline
+    for(std::string::size_type i = 0; i < body.size(); ++i) {
+        if (body[i] == '\n')
+            since_nl = 0;
+        else if (since_nl++ == CHARS_PER_LINE) {
+            body.insert(i, 1, '\n');
+            since_nl = 0; // Probably unneeded
+        }
+    }
+    // See https://stackoverflow.com/questions/1986966/does-s0-point-to-contiguous-characters-in-a-stdstring
+    oledWriteString(&m_oled, 0, 15,1, &title[0], FONT_8x8, 1, 1); // Draw title
+    oledWriteString(&m_oled, 0, 13,2, &body[0], FONT_8x8, 0, 1); // Draw body
+    while(1) {;} // TODO: change, this is temporary, only for this commit!
 }
 
 bool Api::datetime_get(datetime_t *t) {

@@ -1,6 +1,7 @@
 #ifndef __API_H__
 #define __API_H__
 
+#include <iostream>
 #include "pico/util/datetime.h"
 #include "oled/ss_oled.h"
 
@@ -19,6 +20,12 @@ class Api {
         void display_draw_ellipse(int iCenterX, int iCenterY, int32_t iRadiusX, int32_t iRadiusY, uint8_t ucColor, uint8_t bFilled);
         void display_write_buffer(uint8_t *pBuffer);
         int display_write_pixel(int x, int y, unsigned char ucColor, int bRender);
+        // Display a popup over the current view.
+        // This is a blocking function and should be used only in the app's render method.
+        // \param title Popup's title, length should not exceed 13 characters.
+        // \param body String containing the popup's body. The zone has a size of 13×6 characters, so body should not be longer than 78 characters. Newline allows going to the next line and the text is automatically wrapped.
+        // \note Strings longer than 13 and 78 respectively will be truncated.
+        bool gui_popup_text(std::string title, std::string body);
         bool datetime_get(datetime_t *t);
 };
 
