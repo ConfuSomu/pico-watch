@@ -40,8 +40,6 @@ namespace app_home_menu {
         show_title(app_api);
         app_api->display_write_string(0,0,2, pressed_button, FONT_6x8, 0, 1);
         app_api->display_write_string(0,5,3, APPS_NAME[*selected_app], FONT_12x16, 0, 1);
-        sleep_ms(500);
-        app_api->gui_popup_text("Title is a string", "Body text, and new line. And this is a pretty long string.\nIterating is very fun!");
         return 0;
     }
 
