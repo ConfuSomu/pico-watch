@@ -54,6 +54,9 @@ int Api::display_write_pixel(int x, int y, unsigned char ucColor, int bRender) {
 
 bool Api::gui_popup_text(std::string title, std::string body){
 #define CHARS_PER_LINE 13
+    m_button_last_pressed = 0;
+    m_send_button_press_to_app = false;
+
     oledRectangle(&m_oled, 9,7, 119,63, 0, 1); // Background
     oledRectangle(&m_oled, 9,7, 119,63, 1, 0); // Popup border
     oledRectangle(&m_oled, 9,7, 119,16, 1, 1); // Title background
@@ -67,7 +70,7 @@ bool Api::gui_popup_text(std::string title, std::string body){
 
     // Make body fit by adding '\n' at a regular interval
     int since_nl = 0; // Characters since newline
-    for(std::string::size_type i = 0; i < body.size(); ++i) {
+    for (std::string::size_type i = 0; i < body.size(); ++i) {
         if (body[i] == '\n')
             since_nl = 0;
         else if (since_nl++ == CHARS_PER_LINE) {
@@ -78,9 +81,21 @@ bool Api::gui_popup_text(std::string title, std::string body){
     // See https://stackoverflow.com/questions/1986966/does-s0-point-to-contiguous-characters-in-a-stdstring
     oledWriteString(&m_oled, 0, 15,1, &title[0], FONT_8x8, 1, 1); // Draw title
     oledWriteString(&m_oled, 0, 13,2, &body[0], FONT_8x8, 0, 1); // Draw body
-    while(1) {;} // TODO: change, this is temporary, only for this commit!
+    while (m_button_last_pressed != BUTTON_SELECT)
+        sleep_ms(50);
+    // Give back control to running app
+    oledFill(&m_oled, 0, 1);
+    m_send_button_press_to_app = true;
 }
 
 bool Api::datetime_get(datetime_t *t) {
     return rtc_get_datetime(t);
+}
+
+uint Api::button_last_get() {
+    return m_button_last_pressed;
+}
+
+void Api::button_last_set(uint gpio) {
+    m_button_last_pressed = gpio;
 }
