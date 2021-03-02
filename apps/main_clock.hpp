@@ -10,7 +10,7 @@ namespace app_main_clock {
     int init(Api *app_api);
     int render(Api *app_api);
     int btnpressed(Api *app_api, uint gpio);
-    int bgrefresh(Api *app_api, char in_foreground);
+    int bgrefresh(Api *app_api, bool in_foreground);
     int destroy(Api *app_api);
 }
 

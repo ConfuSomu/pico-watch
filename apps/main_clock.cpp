@@ -69,7 +69,7 @@ namespace app_main_clock {
     }
 
     // Processor intensive operations and functions related to drawing to the screen should only be done when the app is in_foreground(=1). This function is only called when the app is init.
-    int bgrefresh(Api *app_api, char in_foreground) {
+    int bgrefresh(Api *app_api, bool in_foreground) {
         return 1;
     }
 

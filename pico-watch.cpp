@@ -19,7 +19,7 @@ Api app_api;
 int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::init, app_main_clock::init};
 int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::render, app_main_clock::render};
 int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(Api *app_api, uint gpio) = {app_home_menu::btnpressed, app_main_clock::btnpressed};
-int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(Api *app_api, char in_foreground) = {app_home_menu::bgrefresh, app_main_clock::bgrefresh};
+int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(Api *app_api, bool in_foreground) = {app_home_menu::bgrefresh, app_main_clock::bgrefresh};
 int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::destroy, app_main_clock::destroy};
 int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1};
 int APPS_IS_INIT[NUMBER_OF_APPS] = {0, 0}; // Only run in background if init
