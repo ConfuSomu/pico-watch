@@ -59,7 +59,7 @@ bool Api::gui_popup_text(std::string title, std::string body){
 
     oledRectangle(&m_oled, 9,7, 119,63, 0, 1); // Background
     oledRectangle(&m_oled, 9,7, 119,63, 1, 0); // Popup border
-    oledRectangle(&m_oled, 9,7, 119,16, 1, 1); // Title background
+    oledRectangle(&m_oled, 9,7, 119,16, 1, 1); // Title background, FIXME pixel bleeding
     oledDumpBuffer(&m_oled, m_ucBuffer); // Display rectangle
 
     // Truncate longer strings to avoid wasting time in for loop and drawing on OLED
@@ -86,6 +86,25 @@ bool Api::gui_popup_text(std::string title, std::string body){
     // Give back control to running app
     oledFill(&m_oled, 0, 1);
     m_send_button_press_to_app = true;
+}
+
+bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, int invert) {
+    // Max chars per line for FONT_8x8 is 16 chars
+    // Max chars per line for FONT_6x8 is 21 chars
+    // Truncate longer text
+    if (text.size() > 21)
+        text.resize(21);
+    
+    // Choose most adapted font size
+    int font;
+    if (text.size() > 16)
+        font = FONT_6x8;
+    else
+        font = FONT_8x8;
+    
+    oledRectangle(&m_oled, 0,56, 128,64, invert, 1);
+    oledDumpBuffer(&m_oled, m_ucBuffer);
+    oledWriteString(&m_oled, 0,offset_x,7-offset_row, &text[0], font, invert, 1);
 }
 
 bool Api::datetime_get(datetime_t *t) {

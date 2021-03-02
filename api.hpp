@@ -30,6 +30,13 @@ class Api {
         // \param body String containing the popup's body. The zone has a size of 13×6 characters, so body should not be longer than 78 characters. Newline allows going to the next line and the text is automatically wrapped.
         // \note Strings longer than 13 and 78 respectively will be truncated.
         bool gui_popup_text(std::string title, std::string body);
+        // Display text at the bottom of the screen.
+        // The font size is automatically choosen based on the text lenght.
+        // \param text Text to display. Text longer than 21 will be truncated.
+        // \param offset_x Set a horizental offset, to allow, for example, centering the text
+        // \param offset_row Allow rendering the text higher. For example, one line higher when `offset_row = 1`.
+        // \param invert allow inverting text and background color.
+        bool gui_footer_text(std::string text, int offset_x = 0, int offset_row = 0, int invert = 0);
         bool datetime_get(datetime_t *t);
         // Get last button pressed, see buttons.hpp for values
         uint button_last_get();
