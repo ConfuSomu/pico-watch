@@ -107,6 +107,25 @@ bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, int in
     oledWriteString(&m_oled, 0,offset_x,7-offset_row, &text[0], font, invert, 1);
 }
 
+bool Api::gui_header_text(std::string text, int offset_x, int offset_row, int invert) {
+    // Max chars per line for FONT_8x8 is 16 chars
+    // Max chars per line for FONT_6x8 is 21 chars
+    // Truncate longer text
+    if (text.size() > 21)
+        text.resize(21);
+    
+    // Choose most adapted font size
+    int font;
+    if (text.size() > 16)
+        font = FONT_6x8;
+    else
+        font = FONT_8x8;
+    
+    oledRectangle(&m_oled, 0,0, 128,8, invert, 1);
+    oledDumpBuffer(&m_oled, m_ucBuffer);
+    oledWriteString(&m_oled, 0,offset_x,0+offset_row, &text[0], font, invert, 1);
+}
+
 bool Api::datetime_get(datetime_t *t) {
     return rtc_get_datetime(t);
 }
