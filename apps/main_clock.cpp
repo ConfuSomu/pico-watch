@@ -64,6 +64,7 @@ namespace app_main_clock {
 
     // Initlisation of the app.
     int init(Api *app_api) {
+        app_api->performance_set(Api::perf_modes::LOW_POWER);
         return 1; // return 1 when function not implemented
     }
 

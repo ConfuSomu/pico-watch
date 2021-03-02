@@ -126,6 +126,10 @@ bool Api::gui_header_text(std::string text, int offset_x, int offset_row, int in
     oledWriteString(&m_oled, 0,offset_x,0+offset_row, &text[0], font, invert, 1);
 }
 
+bool Api::performance_set(int perf) {
+    return false;
+}
+
 bool Api::datetime_get(datetime_t *t) {
     return rtc_get_datetime(t);
 }

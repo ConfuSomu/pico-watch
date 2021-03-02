@@ -16,6 +16,11 @@ class Api {
         void init_display();
     public:
         bool m_send_button_press_to_app = true;
+        enum perf_modes {
+            LOW_POWER,
+            NORMAL_PERF,
+            HIGH_PERF
+        };
         void init();
         int display_write_string(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender);
         void display_fill(unsigned char ucData, int bRender);
@@ -44,6 +49,11 @@ class Api {
         // \param offset_row Render text lines lower. For example, one text line lower with `offset_row = 1`.
         // \param invert Invert text and background color.
         bool gui_header_text(std::string text, int offset_x = 0, int offset_row = 0, int invert = 0);
+        // Set performance mode.
+        // FIXME: function currently does nothing!
+        // An app should choose the lowest performance that can make it function. Set in init(). Only when required, higher performance should be used.
+        // \param perf See Api::perf_modes enum for possible values
+        bool performance_set(int perf);
         bool datetime_get(datetime_t *t);
         // Get last button pressed, see buttons.hpp for values
         uint button_last_get();
