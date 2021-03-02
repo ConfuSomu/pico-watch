@@ -80,7 +80,7 @@ int main() {
 
     while (1) {
         app_render(current_app);
-        sleep_ms(500);
+        sleep_ms(app_api.performance_render_interval_get());
     }
     return 0;
 }

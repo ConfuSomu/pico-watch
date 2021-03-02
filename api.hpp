@@ -13,6 +13,7 @@ class Api {
         u_char m_init_done = 0;
         uint8_t m_ucBuffer[1024] = {0};
         uint m_button_last_pressed = 0;
+        int m_app_render_interval = 500;
         void init_display();
     public:
         bool m_send_button_press_to_app = true;
@@ -55,7 +56,14 @@ class Api {
         // \param perf See Api::perf_modes enum for possible values
         bool performance_set(int perf);
         bool datetime_get(datetime_t *t);
+        // Get app's current render interval
+        // \return Value in millisec
+        int performance_render_interval_get();
+        // Same spirit as performance_set, the app should use the smallest value possible that does not cause a lack of responsiveness in the app's UI.
+        // \param interval Time to wait in millisec between calls of the app's render function.
+        void performance_render_interval_set(int interval);
         // Get last button pressed, see buttons.hpp for values
+        // \return Last button pressed
         uint button_last_get();
         // Set last button pressed, should only be called by button gpio interrupt.
         void button_last_set(uint gpio);

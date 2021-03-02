@@ -134,6 +134,16 @@ bool Api::datetime_get(datetime_t *t) {
     return rtc_get_datetime(t);
 }
 
+int Api::performance_render_interval_get() {
+    return m_app_render_interval;
+}
+
+void Api::performance_render_interval_set(int interval) {
+    if (interval < 10)
+        interval = 10;
+    m_app_render_interval = interval;
+}
+
 uint Api::button_last_get() {
     return m_button_last_pressed;
 }
