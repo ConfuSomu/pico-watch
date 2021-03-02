@@ -11,6 +11,7 @@
 #include "apps/home_menu.hpp"
 
 int current_app = 0;
+bool app_ready = true;
 Api app_api;
 
 #define NUMBER_OF_APPS 2
@@ -25,6 +26,7 @@ int APPS_IS_INIT[NUMBER_OF_APPS] = {0, 0}; // Only run in background if init
 
 int app_init(int app_id) {
     app_api.display_fill(0,1); // Clear OLED
+    app_api.performance_render_interval_set(500); // Reset interval
     if (!APPS_IS_INIT[app_id]) {
         APPS_IS_INIT[app_id] = 1;
         return (*APPS_FUNC_INIT[app_id])(&app_api);
@@ -42,7 +44,6 @@ int app_btnpressed(int app_id, uint gpio) {
 }
 
 int app_destroy(int app_id) {
-    // TODO: reset APPS_DATA for the app
     if (APPS_IS_INIT[app_id]) {
         APPS_IS_INIT[app_id] = 0;
         return (*APPS_FUNC_DESTROY[app_id])(&app_api);
@@ -62,11 +63,13 @@ bool apps_bgrefresh(struct repeating_timer *t) {  // TODO: Refresh done on core1
 }
 
 void app_switch(int old_appid, int new_appid) {
+    app_ready = false;
     if (APPS_DESTROY_ON_EXIT[old_appid]) {
         app_destroy(old_appid);
     }
     app_init(new_appid);
     current_app = new_appid;
+    app_ready = true;
 }
 
 int main() {
@@ -79,7 +82,8 @@ int main() {
     app_init(current_app);
 
     while (1) {
-        app_render(current_app);
+        if (app_ready)
+            app_render(current_app); // FIXME: This may cause race conditions when switching app
         sleep_ms(app_api.performance_render_interval_get());
     }
     return 0;
