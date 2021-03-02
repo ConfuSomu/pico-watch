@@ -47,14 +47,13 @@ namespace app_main_clock {
 
         // date
         date_as_str(datetime_str, sizeof(datetime_buf), &t);
-        app_api->display_write_string(0,0,7, datetime_str, FONT_8x8, 0, 1);
+        app_api->gui_footer_text((std::string)datetime_str);
     }
 
     // Rendering of the app
     int render(Api *app_api) {
-        app_api->display_write_string(0,15,0, (char *)"Test clock", FONT_8x8, 0, 1);
+        app_api->gui_header_text("Test clock", 17);
         show_datetime(app_api);
-        //app_api->display_write_string(0,0,0, &data[0], FONT_6x8, 0, 1);
         return 0;
     }
 

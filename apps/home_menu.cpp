@@ -32,7 +32,7 @@ namespace app_home_menu {
 
         // title with time
         title_str(datetime_str, sizeof(datetime_buf), &t);
-        app_api->display_write_string(0,0,0, datetime_str, FONT_8x8, 0, 1);
+        app_api->gui_header_text((std::string)datetime_str);
     }
 
     // Rendering of app
