@@ -2,10 +2,12 @@
 #include "pico/stdlib.h"
 
 #include "buttons.hpp"
+#include "api.hpp"
 // From pico-watch.c:
 extern int app_btnpressed(int app_id, uint gpio);
 extern void app_switch(int old_appid, int new_appid);
 extern int current_app;
+extern Api app_api;
 
 // Debounce control
 // See https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=301522#p1812063
@@ -21,7 +23,7 @@ void gpio_interrupt_cb(uint gpio, uint32_t events) {
             app_switch(current_app, 0);
         else
             app_btnpressed(current_app, gpio);
-        
+        app_api.button_last_set(gpio);
         button_time = to_ms_since_boot(get_absolute_time());
     }
 }

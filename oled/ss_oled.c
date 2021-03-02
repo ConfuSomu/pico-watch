@@ -1486,20 +1486,23 @@ unsigned char c, *s, ucTemp[40];
          if (iScroll < 8) // only display visible characters
          {
              c = (unsigned char)szMsg[i];
-             iFontOff = (int)(c-32) * 7;
-             // we can't directly use the pointer to FLASH memory, so copy to a local buffer
-             ucTemp[0] = 0;
-             memcpy(&ucTemp[1], &ucFont[iFontOff], 7);
-             if (bInvert) InvertBytes(ucTemp, 8);
-    //         oledCachedWrite(ucTemp, 8);
-             iLen = 8 - iFontSkip;
-             if (pOLED->iCursorX + iLen > pOLED->oled_x) // clip right edge
-                 iLen = pOLED->oled_x - pOLED->iCursorX;
-             oledWriteDataBlock(pOLED, &ucTemp[iFontSkip], iLen, bRender); // write character pattern
-             pOLED->iCursorX += iLen;
-             if (pOLED->iCursorX >= pOLED->oled_x-7 && pOLED->oled_wrap) // word wrap enabled?
+             if (c != '\n') { // Do not draw the new line char
+              iFontOff = (int)(c-32) * 7;
+              // we can't directly use the pointer to FLASH memory, so copy to a local buffer
+              ucTemp[0] = 0;
+              memcpy(&ucTemp[1], &ucFont[iFontOff], 7);
+              if (bInvert) InvertBytes(ucTemp, 8);
+      //         oledCachedWrite(ucTemp, 8);
+              iLen = 8 - iFontSkip;
+              if (pOLED->iCursorX + iLen > pOLED->oled_x) // clip right edge
+                  iLen = pOLED->oled_x - pOLED->iCursorX;
+              oledWriteDataBlock(pOLED, &ucTemp[iFontSkip], iLen, bRender); // write character pattern
+              pOLED->iCursorX += iLen;
+             }
+
+             if ((pOLED->iCursorX >= pOLED->oled_x-7 && pOLED->oled_wrap) || c == '\n') // word wrap enabled? or new line char
              {
-               pOLED->iCursorX = 0; // start at the beginning of the next line
+               pOLED->iCursorX = x; // start at the beginning of the next line
                pOLED->iCursorY++;
                oledSetPosition(pOLED, pOLED->iCursorX, pOLED->iCursorY, bRender);
              }

@@ -7,7 +7,6 @@
 #define SCL_PIN 7
 #define RESET_PIN -1
 #define OLED_DEFAULT_CONTRAST 40
-extern SSOLED oled;
 
 // Initial date & time
 // The idea is to have the compiler set the date at compile-time.
@@ -23,8 +22,6 @@ extern SSOLED oled;
 
 // Init every componement
 void init_all();
-// Init OLED display
-void init_display();
 // Init onboard RTC
 void init_rtc();
 
