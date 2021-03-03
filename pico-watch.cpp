@@ -11,6 +11,7 @@
 #include "apps/home_menu.hpp"
 
 int current_app = 0;
+bool is_sleeping = false;
 bool app_ready = true;
 Api app_api;
 
@@ -55,7 +56,19 @@ int app_bgrefresh(int app_id) {
         return (*APPS_FUNC_BGREFRESH[app_id])(&app_api, app_id==current_app);
 }
 
-bool apps_bgrefresh(struct repeating_timer *t) {  // TODO: Refresh done on core1
+bool repeating_callback(struct repeating_timer *t) {
+    // Enter shallow sleep mode when needed
+    uint32_t time_since_last_press = to_ms_since_boot(get_absolute_time())-button_last_pressed_time;
+    if (!is_sleeping && time_since_last_press > ENTER_SLEEP_DELAY) {
+        is_sleeping = true;
+        app_api.performance_set(Api::perf_modes::ENTER_SHALLOW_SLEEP);
+        app_api.display_power(false);
+    } else if (is_sleeping && time_since_last_press < ENTER_SLEEP_DELAY) {
+        is_sleeping = false;
+        app_api.performance_set(Api::perf_modes::EXIT_SHALLOW_SLEEP);
+        app_api.display_power(true);
+    }
+    // Refresh each app, but should it be done when sleeping?
     for (int i=0; i < NUMBER_OF_APPS; i++) {
         app_bgrefresh(i);
     }
@@ -77,12 +90,12 @@ int main() {
     init_buttons();
     app_api.init();
     struct repeating_timer timer;
-    add_repeating_timer_ms(250, apps_bgrefresh, NULL, &timer);
+    add_repeating_timer_ms(250, repeating_callback, NULL, &timer); // TODO: Execute on core1
 
     app_init(current_app);
 
     while (1) {
-        if (app_ready)
+        if (app_ready && !is_sleeping)
             app_render(current_app); // FIXME: This may cause race conditions when switching app
         sleep_ms(app_api.performance_render_interval_get());
     }

@@ -19,6 +19,9 @@
 #define INIT_DATETIME_MIN 45
 #define INIT_DATETIME_SEC 00
 
+// Time (ms) before entering sleep
+#define ENTER_SLEEP_DELAY 10000
+
 
 // Init every componement
 void init_all();

@@ -11,20 +11,19 @@ extern Api app_api;
 
 // Debounce control
 // See https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=301522#p1812063
-// time is currently shared between all buttons.
-unsigned long button_time;
-const int button_delayTime = 50; // 50ms worked fine for me .... change it to your needs/specs.
+unsigned long button_last_pressed_time;
+const int button_delay_time = 50; // 50ms worked fine for me .... change it to your needs/specs.
 
 //const uint BUTTON_PINS[] = {BUTTON_HOME, BUTTON_SELECT, BUTTON_MODE, BUTTON_UP, BUTTON_DOWN};
 
 void gpio_interrupt_cb(uint gpio, uint32_t events) {
-    if ((to_ms_since_boot(get_absolute_time())-button_time)>button_delayTime) {
+    if ((to_ms_since_boot(get_absolute_time())-button_last_pressed_time)>button_delay_time) {
         if (gpio == BUTTON_HOME && (current_app != 0)) // Home app
             app_switch(current_app, 0);
         else
             app_btnpressed(current_app, gpio);
         app_api.button_last_set(gpio);
-        button_time = to_ms_since_boot(get_absolute_time());
+        button_last_pressed_time = to_ms_since_boot(get_absolute_time());
     }
 }
 
@@ -53,5 +52,5 @@ void init_buttons() {
         gpio_set_irq_enabled_with_callback(button, GPIO_IRQ_EDGE_FALL , true, &gpio_interrupt_cb);
     }
     */
-    button_time = to_ms_since_boot(get_absolute_time());
+    button_last_pressed_time = to_ms_since_boot(get_absolute_time());
 }

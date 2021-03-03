@@ -20,9 +20,13 @@ class Api {
         enum perf_modes {
             LOW_POWER,
             NORMAL_PERF,
-            HIGH_PERF
+            HIGH_PERF,
+            ENTER_SHALLOW_SLEEP,
+            EXIT_SHALLOW_SLEEP // Restore perf setting
         };
         void init();
+        // Control the display's power (on or off)
+        void display_power(bool mode);
         int display_write_string(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender);
         void display_fill(unsigned char ucData, int bRender);
         void display_draw_line(int x1, int y1, int x2, int y2, int bRender);

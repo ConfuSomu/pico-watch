@@ -11,6 +11,10 @@
 #define BUTTON_DOWN 20
 #define BUTTON_UP 21
 
+// time is currently shared between all buttons.
+extern unsigned long button_last_pressed_time;
+extern const int button_delay_time;
+
 void init_buttons();
 void gpio_interrupt_cb(uint gpio, uint32_t events);
 

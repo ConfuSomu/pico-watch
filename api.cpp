@@ -22,6 +22,10 @@ void Api::init_display() {
     //oledSetTextWrap(&oled, true);
 }
 
+void Api::display_power(bool mode) {
+    oledPower(&m_oled, mode);
+}
+
 int Api::display_write_string(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender) {
     return oledWriteString(&m_oled, iScrollX, x, y, szMsg, iSize, bInvert, bRender);
 }
