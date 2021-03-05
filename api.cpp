@@ -27,7 +27,8 @@ void Api::display_power(bool mode) {
 }
 
 int Api::display_write_string(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender) {
-    return oledWriteString(&m_oled, iScrollX, x, y, szMsg, iSize, bInvert, bRender);
+    oledWriteString(&m_oled, iScrollX, x, y, szMsg, iSize, bInvert, 0);
+    m_writebb_needed = true;
 }
 
 void Api::display_fill(unsigned char ucData, int bRender) {
@@ -35,21 +36,28 @@ void Api::display_fill(unsigned char ucData, int bRender) {
 }
 
 void Api::display_draw_line(int x1, int y1, int x2, int y2, int bRender) {
-    oledDrawLine(&m_oled, x1, y1, x2, y2, bRender);
+    oledDrawLine(&m_oled, x1, y1, x2, y2, 0);
+    m_writebb_needed = true;
 }
 
 void Api::display_draw_rectange(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled) {
     oledRectangle(&m_oled, x1, y1, x2, y2, ucColor, bFilled);
-    oledDumpBuffer(&m_oled, m_ucBuffer); // Write the back buffer, after experimentation, seems to be required when drawing this shape
+    m_writebb_needed = true; // Write the back buffer, after experimentation, seems to be required when drawing this shape
 }
 
 void Api::display_draw_ellipse(int iCenterX, int iCenterY, int32_t iRadiusX, int32_t iRadiusY, uint8_t ucColor, uint8_t bFilled) {
     oledEllipse(&m_oled, iCenterX, iCenterY, iRadiusX, iRadiusY, ucColor, bFilled);
-    oledDumpBuffer(&m_oled, m_ucBuffer);
+    m_writebb_needed = true;
 }
 
 void Api::display_write_buffer(uint8_t *pBuffer) {
     oledDumpBuffer(&m_oled, pBuffer);
+}
+
+void Api::display_write_backbuffer() {
+    if (m_writebb_needed)
+        oledDumpBuffer(&m_oled, m_ucBuffer);
+    m_writebb_needed = false;
 }
 
 int Api::display_write_pixel(int x, int y, unsigned char ucColor, int bRender) {
@@ -64,7 +72,7 @@ bool Api::gui_popup_text(std::string title, std::string body){
     oledRectangle(&m_oled, 9,7, 119,63, 0, 1); // Background
     oledRectangle(&m_oled, 9,7, 119,63, 1, 0); // Popup border
     oledRectangle(&m_oled, 9,7, 119,16, 1, 1); // Title background, FIXME pixel bleeding
-    oledDumpBuffer(&m_oled, m_ucBuffer); // Display rectangle
+    m_writebb_needed = true; this->display_write_backbuffer(); // Display rectangle and anything else behind it (drawn before)
 
     // Truncate longer strings to avoid wasting time in for loop and drawing on OLED
     if (title.size() > 13)
@@ -108,9 +116,9 @@ bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, bool i
     
     if (!no_bg) {
         oledRectangle(&m_oled, 0,56-offset_row*8, 127,64-offset_row*8, invert, 1);
-        oledDumpBuffer(&m_oled, m_ucBuffer);
+        m_writebb_needed = true;
     }
-    oledWriteString(&m_oled, 0,offset_x,7-offset_row, &text[0], font, invert, 1);
+    oledWriteString(&m_oled, 0,offset_x,7-offset_row, &text[0], font, invert, 0);
 }
 
 bool Api::gui_header_text(std::string text, int offset_x, int offset_row, bool invert, bool no_bg) {
@@ -129,9 +137,9 @@ bool Api::gui_header_text(std::string text, int offset_x, int offset_row, bool i
     
     if (!no_bg) {
         oledRectangle(&m_oled, 0,0+offset_row*8, 127,8+offset_row*8, invert, 1);
-        oledDumpBuffer(&m_oled, m_ucBuffer);
+        m_writebb_needed = true;
     }
-    oledWriteString(&m_oled, 0,offset_x,0+offset_row, &text[0], font, invert, 1);
+    oledWriteString(&m_oled, 0,offset_x,0+offset_row, &text[0], font, invert, 0);
 }
 
 bool Api::performance_set(int perf) {

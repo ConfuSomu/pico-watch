@@ -11,6 +11,7 @@ class Api {
     private:
         SSOLED m_oled;
         u_char m_init_done = 0;
+        bool m_writebb_needed = false; // Do we need to write the internal backbuffer?
         uint8_t m_ucBuffer[1024] = {0};
         uint m_button_last_pressed = 0;
         int m_app_render_interval = 500;
@@ -33,6 +34,8 @@ class Api {
         void display_draw_rectange(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled);
         void display_draw_ellipse(int iCenterX, int iCenterY, int32_t iRadiusX, int32_t iRadiusY, uint8_t ucColor, uint8_t bFilled);
         void display_write_buffer(uint8_t *pBuffer);
+        // Write the internal backbuffer to the display. Should be called when after all drawing calls. One call is done to avoid flickering of the display.
+        void display_write_backbuffer();
         int display_write_pixel(int x, int y, unsigned char ucColor, int bRender);
         // Display a popup over the current view and wait for select button to be pressed.
         // This is a blocking function and should be used only in the app's render method.
