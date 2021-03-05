@@ -45,15 +45,17 @@ class Api {
         // \param text Text to display. Text longer than 21 will be truncated.
         // \param offset_x Set a horizental offset, to allow, for example, centering the text
         // \param offset_row Allow rendering the text higher. For example, one line higher when `offset_row = 1`.
-        // \param invert allow inverting text and background color.
-        bool gui_footer_text(std::string text, int offset_x = 0, int offset_row = 0, int invert = 0);
+        // \param invert Invert text and background color.
+        // \param no_bg Do not draw background when true.
+        bool gui_footer_text(std::string text, int offset_x = 0, int offset_row = 0, bool invert = false, bool no_bg = false);
         // Display text at the top of the screen.
         // The font size is automatically choosen based on the text lenght.
         // \param text Text to display. Text longer than 21 will be truncated.
         // \param offset_x Set a horizental offset, to allow, for example, centering the text
         // \param offset_row Render text lines lower. For example, one text line lower with `offset_row = 1`.
         // \param invert Invert text and background color.
-        bool gui_header_text(std::string text, int offset_x = 0, int offset_row = 0, int invert = 0);
+        // \param no_bg Do not draw background when true.
+        bool gui_header_text(std::string text, int offset_x = 0, int offset_row = 0, bool invert = false, bool no_bg = false);
         // Set performance mode.
         // FIXME: function currently does nothing!
         // An app should choose the lowest performance that can make it function. Set in init(). Only when required, higher performance should be used.

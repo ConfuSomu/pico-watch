@@ -92,7 +92,7 @@ bool Api::gui_popup_text(std::string title, std::string body){
     m_send_button_press_to_app = true;
 }
 
-bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, int invert) {
+bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, bool invert, bool no_bg) {
     // Max chars per line for FONT_8x8 is 16 chars
     // Max chars per line for FONT_6x8 is 21 chars
     // Truncate longer text
@@ -106,12 +106,14 @@ bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, int in
     else
         font = FONT_8x8;
     
-    oledRectangle(&m_oled, 0,56, 128,64, invert, 1);
-    oledDumpBuffer(&m_oled, m_ucBuffer);
+    if (!no_bg) {
+        oledRectangle(&m_oled, 0,56-offset_row*8, 127,64-offset_row*8, invert, 1);
+        oledDumpBuffer(&m_oled, m_ucBuffer);
+    }
     oledWriteString(&m_oled, 0,offset_x,7-offset_row, &text[0], font, invert, 1);
 }
 
-bool Api::gui_header_text(std::string text, int offset_x, int offset_row, int invert) {
+bool Api::gui_header_text(std::string text, int offset_x, int offset_row, bool invert, bool no_bg) {
     // Max chars per line for FONT_8x8 is 16 chars
     // Max chars per line for FONT_6x8 is 21 chars
     // Truncate longer text
@@ -125,8 +127,10 @@ bool Api::gui_header_text(std::string text, int offset_x, int offset_row, int in
     else
         font = FONT_8x8;
     
-    oledRectangle(&m_oled, 0,0, 128,8, invert, 1);
-    oledDumpBuffer(&m_oled, m_ucBuffer);
+    if (!no_bg) {
+        oledRectangle(&m_oled, 0,0+offset_row*8, 127,8+offset_row*8, invert, 1);
+        oledDumpBuffer(&m_oled, m_ucBuffer);
+    }
     oledWriteString(&m_oled, 0,offset_x,0+offset_row, &text[0], font, invert, 1);
 }
 
