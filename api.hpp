@@ -20,6 +20,7 @@ class Api {
         // When the string cannot be created, this comes from the fact that we, on some runs, allocation can be very close to the SRAM's boundry: 0x20041f88 with boundry at 0x20042000. The heap is nearly full. Even just appending to a string moves the allocation lower. I think that the best course of action would be to have more static variables and pull in less things to save SRAM.
         // When char* directly passed as parameter: The memory is possibly fragmented as long strings (>215) push the allocation downwards, into lower (higher address) in the heap. title is at 0x20041f90 and body at 0x200045e8, for length of 215 chars.
         void gui_popup_generic(std::string &title, std::string &body, int max_title_length = 13, int max_body_length = 78);
+        void gui_popup_intchoice_footer(int current_num, int min_num, int max_num);
     public:
         bool m_send_button_press_to_app = true;
         enum perf_modes {
@@ -53,6 +54,16 @@ class Api {
         // \param body String containing the popup's body. The zone has a size of 13×6 characters, so body should not be longer than 78 characters. Newline allows going to the next line and the text is automatically wrapped.
         // \note Strings longer than 13 and 78 respectively will be truncated.
         bool gui_popup_booleanchoice(std::string title, std::string body);
+        // Display a popup over the current view and wait for user to choose (with left and right) a number between min_num and max_num. The default choice is default_num and the user can reset back to it with mode/cancel button. After confirming with select, the choice is returned.
+        // This is a blocking function and should be used only in the app's render method.
+        // \param title Popup's title. The title is prefixed with "Number|", so the `title` argument cannot exceed 6 characters.
+        // \param body String containing the popup's body. The zone has a size of 13×3 characters, so body should not be longer than 39 characters. Newline allows going to the next line and the text is automatically wrapped. Under the body is displayed the current choosen number with the min and max in parenthesis.
+        // \param min_num The smallest number that can be choosen.
+        // \param max_num Biggest number that can be choosen.
+        // \param default_num This should be between min_num and max_num, else user may be able to return a number out of range
+        // \param step Value to increment/decrement from when user changes number. This cannot result in an out-of-bounds as the number is clipped to the min/max when this happens. This maybe undesirable behaviour.
+        // \note Strings longer than 13 and 39 respectively will be truncated.
+        int gui_popup_intchoice(std::string title, std::string body, int min_num = 0, int max_num = 10, int default_num = 5, int step = 1);
         // Display text at the bottom of the screen.
         // The font size is automatically choosen based on the text lenght.
         // \param text Text to display. Text longer than 21 will be truncated.

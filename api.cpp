@@ -68,7 +68,7 @@ void Api::gui_popup_generic(std::string &title, std::string &body, int max_title
     oledRectangle(&m_oled, 9,7, 119,63, 0, 1); // Background
     oledRectangle(&m_oled, 9,7, 119,63, 1, 0); // Popup border
     oledRectangle(&m_oled, 9,7, 119,16, 1, 1); // Title background, FIXME pixel bleeding
-    m_writebb_needed = true; this->display_write_backbuffer(); // Display rectangle and anything else behind it (drawn before), could be moved after writing strings
+    m_writebb_needed = true; this->display_write_backbuffer(); // Display rectangle and anything else behind it (drawn before), could be moved after writing strings (but not done for debugging)
 
     // Truncate longer strings to avoid wasting time in for loop and drawing on OLED
     if (max_title_length > 13) max_title_length = 13;
@@ -133,6 +133,56 @@ bool Api::gui_popup_booleanchoice(std::string title, std::string body){
     oledFill(&m_oled, 0, 1);
     m_send_button_press_to_app = true;
     return choice;
+}
+
+void Api::gui_popup_intchoice_footer(int current_num, int min_num, int max_num) {
+    char buf[30];
+    snprintf(&buf[0], sizeof(buf),
+            "Select: %d (%d/%d)",
+            current_num,
+            min_num,
+            max_num);
+    oledRectangle(&m_oled, 9,55, 119,63, 1, 1); // Footer background, FIXME pixel bleeding
+    oledWriteString(&m_oled, 0,10,7, buf, FONT_6x8, 1, 0);
+    m_writebb_needed = true; display_write_backbuffer();
+}
+
+int Api::gui_popup_intchoice(std::string title, std::string body, int min_num, int max_num, int default_num, int step){
+    m_button_last_pressed = BUTTON_NONE;
+    m_send_button_press_to_app = false;
+
+    int current_num = default_num;
+
+    title.insert(0, "Number|"); // TODO: Could be made nicer with a custom char instead of pipe char
+    gui_popup_generic(title, body, 13, 39); // 39: 3 lines of body text, to leave space for number
+    gui_popup_intchoice_footer(current_num, min_num, max_num);
+
+    do {
+        m_button_last_pressed = BUTTON_NONE;
+        sleep_ms(50); // TODO: use _wfi()
+        switch (m_button_last_pressed) {
+            case BUTTON_UP:
+                current_num += step;
+                if (current_num > max_num)
+                    current_num = max_num;
+                break;
+            case BUTTON_DOWN:
+                current_num -= step;
+                if (current_num < min_num)
+                    current_num = min_num;
+                break;
+            case BUTTON_MODE:
+                current_num = default_num;
+                break;
+        }
+        if (m_button_last_pressed)
+            gui_popup_intchoice_footer(current_num, min_num, max_num);
+    } while (m_button_last_pressed != BUTTON_SELECT);    
+
+    // Give back control to running app
+    oledFill(&m_oled, 0, 1);
+    m_send_button_press_to_app = true;
+    return current_num;
 }
 
 bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, bool invert, bool no_bg) {
