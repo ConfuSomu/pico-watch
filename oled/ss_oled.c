@@ -1460,7 +1460,7 @@ void oledSetTextWrap(SSOLED *pOLED, int bWrap)
 // Draw a string of normal (8x8), small (6x8) or large (16x32) characters
 // At the given col+row
 //
-int oledWriteString(SSOLED *pOLED, int iScroll, int x, int y, char *szMsg, int iSize, int bInvert, int bRender)
+int oledWriteString(SSOLED *pOLED, int iScroll, int x, int y, const char *szMsg, int iSize, int bInvert, int bRender)
 {
 int i, iFontOff, iLen, iFontSkip;
 unsigned char c, *s, ucTemp[40];

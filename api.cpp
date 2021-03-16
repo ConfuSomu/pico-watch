@@ -64,23 +64,22 @@ int Api::display_write_pixel(int x, int y, unsigned char ucColor, int bRender) {
     return oledSetPixel(&m_oled, x, y, ucColor, bRender);
 }
 
-bool Api::gui_popup_text(std::string title, std::string body){
-#define CHARS_PER_LINE 13
-    m_button_last_pressed = 0;
-    m_send_button_press_to_app = false;
-
+void Api::gui_popup_generic(std::string &title, std::string &body, int max_title_length, int max_body_length) {
     oledRectangle(&m_oled, 9,7, 119,63, 0, 1); // Background
     oledRectangle(&m_oled, 9,7, 119,63, 1, 0); // Popup border
     oledRectangle(&m_oled, 9,7, 119,16, 1, 1); // Title background, FIXME pixel bleeding
-    m_writebb_needed = true; this->display_write_backbuffer(); // Display rectangle and anything else behind it (drawn before)
+    m_writebb_needed = true; this->display_write_backbuffer(); // Display rectangle and anything else behind it (drawn before), could be moved after writing strings
 
     // Truncate longer strings to avoid wasting time in for loop and drawing on OLED
-    if (title.size() > 13)
+    if (max_title_length > 13) max_title_length = 13;
+    if (max_body_length > 78) max_body_length = 78;
+    if (title.size() > max_title_length)
         title.resize(13);
-    if (body.size() > 78)
+    if (body.size() > max_body_length)
         body.resize(78);
 
     // Make body fit by adding '\n' at a regular interval
+    #define CHARS_PER_LINE 13
     int since_nl = 0; // Characters since newline
     for (std::string::size_type i = 0; i < body.size(); ++i) {
         if (body[i] == '\n')
@@ -91,10 +90,18 @@ bool Api::gui_popup_text(std::string title, std::string body){
         }
     }
     // See https://stackoverflow.com/questions/1986966/does-s0-point-to-contiguous-characters-in-a-stdstring
-    oledWriteString(&m_oled, 0, 15,1, &title[0], FONT_8x8, 1, 1); // Draw title
-    oledWriteString(&m_oled, 0, 13,2, &body[0], FONT_8x8, 0, 1); // Draw body
+    oledWriteString(&m_oled, 0, 15,1, title.c_str(), FONT_8x8, 1, 1); // Draw title
+    oledWriteString(&m_oled, 0, 13,2, body.c_str(), FONT_8x8, 0, 1); // Draw body
+}
+
+bool Api::gui_popup_text(std::string title, std::string body){
+    m_button_last_pressed = 0;
+    m_send_button_press_to_app = false;
+
+    gui_popup_generic(title, body);
+
     while (m_button_last_pressed != BUTTON_SELECT)
-        sleep_ms(50);
+        sleep_ms(50); // TODO: use _wfi()
     // Give back control to running app
     oledFill(&m_oled, 0, 1);
     m_send_button_press_to_app = true;
@@ -118,7 +125,7 @@ bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, bool i
         oledRectangle(&m_oled, 0,56-offset_row*8, 127,64-offset_row*8, invert, 1);
         m_writebb_needed = true;
     }
-    oledWriteString(&m_oled, 0,offset_x,7-offset_row, &text[0], font, invert, 0);
+    oledWriteString(&m_oled, 0,offset_x,7-offset_row, text.c_str(), font, invert, 0);
 }
 
 bool Api::gui_header_text(std::string text, int offset_x, int offset_row, bool invert, bool no_bg) {
@@ -139,7 +146,7 @@ bool Api::gui_header_text(std::string text, int offset_x, int offset_row, bool i
         oledRectangle(&m_oled, 0,0+offset_row*8, 127,8+offset_row*8, invert, 1);
         m_writebb_needed = true;
     }
-    oledWriteString(&m_oled, 0,offset_x,0+offset_row, &text[0], font, invert, 0);
+    oledWriteString(&m_oled, 0,offset_x,0+offset_row, text.c_str(), font, invert, 0);
 }
 
 bool Api::performance_set(int perf) {

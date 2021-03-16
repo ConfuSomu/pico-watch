@@ -16,6 +16,10 @@ class Api {
         uint m_button_last_pressed = 0;
         int m_app_render_interval = 500;
         void init_display();
+        // Careful of large heap usage with long strings! Heap seems to be fragmented, so shorter strings work best. More details on findings below:
+        // When the string cannot be created, this comes from the fact that we, on some runs, allocation can be very close to the SRAM's boundry: 0x20041f88 with boundry at 0x20042000. The heap is nearly full. Even just appending to a string moves the allocation lower. I think that the best course of action would be to have more static variables and pull in less things to save SRAM.
+        // When char* directly passed as parameter: The memory is possibly fragmented as long strings (>215) push the allocation downwards, into lower (higher address) in the heap. title is at 0x20041f90 and body at 0x200045e8, for length of 215 chars.
+        void gui_popup_generic(std::string &title, std::string &body, int max_title_length = 13, int max_body_length = 78);
     public:
         bool m_send_button_press_to_app = true;
         enum perf_modes {
