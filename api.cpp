@@ -95,7 +95,7 @@ void Api::gui_popup_generic(std::string &title, std::string &body, int max_title
 }
 
 bool Api::gui_popup_text(std::string title, std::string body){
-    m_button_last_pressed = 0;
+    m_button_last_pressed = BUTTON_NONE;
     m_send_button_press_to_app = false;
 
     gui_popup_generic(title, body);
@@ -105,6 +105,34 @@ bool Api::gui_popup_text(std::string title, std::string body){
     // Give back control to running app
     oledFill(&m_oled, 0, 1);
     m_send_button_press_to_app = true;
+    return true;
+}
+
+bool Api::gui_popup_booleanchoice(std::string title, std::string body){
+    m_button_last_pressed = BUTTON_NONE;
+    m_send_button_press_to_app = false;
+
+    title.insert(0, "Choice|"); // TODO: Could be made nicer with a custom char that uses the whole height, this would give a visible separation, with two "text blocks" composing the title
+    gui_popup_generic(title, body);
+
+    while (m_button_last_pressed != BUTTON_SELECT and m_button_last_pressed != BUTTON_MODE)
+        sleep_ms(50); // TODO: use _wfi()
+
+    bool choice;
+    switch (m_button_last_pressed) {
+        case BUTTON_SELECT:
+            choice = true;
+            break;
+        case BUTTON_MODE:
+            choice = false;
+            break;
+        default:
+            __breakpoint(); // Impossible to attain (but you never know…)
+    }
+    // Give back control to running app
+    oledFill(&m_oled, 0, 1);
+    m_send_button_press_to_app = true;
+    return choice;
 }
 
 bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, bool invert, bool no_bg) {

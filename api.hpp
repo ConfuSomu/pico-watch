@@ -47,6 +47,12 @@ class Api {
         // \param body String containing the popup's body. The zone has a size of 13×6 characters, so body should not be longer than 78 characters. Newline allows going to the next line and the text is automatically wrapped.
         // \note Strings longer than 13 and 78 respectively will be truncated.
         bool gui_popup_text(std::string title, std::string body);
+        // Display a popup over the current view and wait for select or mode (cancel) button to be pressed. The choice done (yes/no) by the user is returned as a bool.
+        // This is a blocking function and should be used only in the app's render method.
+        // \param title Popup's title. The title is prefixed with "Choice|", so the `title` argument cannot exceed 6 characters.
+        // \param body String containing the popup's body. The zone has a size of 13×6 characters, so body should not be longer than 78 characters. Newline allows going to the next line and the text is automatically wrapped.
+        // \note Strings longer than 13 and 78 respectively will be truncated.
+        bool gui_popup_booleanchoice(std::string title, std::string body);
         // Display text at the bottom of the screen.
         // The font size is automatically choosen based on the text lenght.
         // \param text Text to display. Text longer than 21 will be truncated.
