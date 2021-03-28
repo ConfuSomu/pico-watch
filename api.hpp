@@ -21,6 +21,7 @@ class Api {
         // When char* directly passed as parameter: The memory is possibly fragmented as long strings (>215) push the allocation downwards, into lower (higher address) in the heap. title is at 0x20041f90 and body at 0x200045e8, for length of 215 chars.
         void gui_popup_generic(std::string &title, std::string &body, int max_title_length = 13, int max_body_length = 78);
         void gui_popup_intchoice_footer(int current_num, int min_num, int max_num);
+        void gui_popup_strchoice_footer(const char selection[]);
     public:
         bool m_send_button_press_to_app = true;
         enum perf_modes {
@@ -64,6 +65,16 @@ class Api {
         // \param step Value to increment/decrement from when user changes number. This cannot result in an out-of-bounds as the number is clipped to the min/max when this happens. This maybe undesirable behaviour.
         // \note Strings longer than 13 and 39 respectively will be truncated.
         int gui_popup_intchoice(std::string title, std::string body, int min_num = 0, int max_num = 10, int default_num = 5, int step = 1);
+        // Display a popup over the current view and wait for user to choose (with left and right) a string (char array). The default choice is default_index and the user can reset back to it with mode/cancel button. After confirming with select, the choice's index is returned.
+        // This is a blocking function and should be used only in the app's render method.
+        // \param title Popup's title. The title is prefixed with "Choice|", so the `title` argument cannot exceed 6 characters.
+        // \param body String containing the popup's body. The zone has a size of 13×3 characters, so body should not be longer than 39 characters. Newline allows going to the next line and the text is automatically wrapped. Under the body is displayed the current choosen number with the min and max in parenthesis.
+        // \param choices List of const char arrays to choose from, each string cannot be longer than 27 chars because of "Select: " text. Font size between 6×8 and 8×8 is choosen automatically. Set the second dimension size of your array of choices to max 27. For example, define: `const char *choices[27] = {…}` than call this function by passing directly `choices`.
+        // \param choices_size Size of choices array, used for avoiding selection of element that are out of the array's bounds. This is only used for determining max_index when max_index is unset. **Following parameters can be left at their default value:**
+        // \param min_index Smallest element index that can be choosen. This allows reusing the same choice list for muliple prompts and allows programmatically changing the choices available to the user.
+        // \param max_index Biggest element index that can be choosen. This defaults to the size of the list (set by `choices_size`) if left at -1.
+        // \param default_index Default string displayed.
+        int gui_popup_strchoice(std::string title, std::string body, const char *choices[27], int choices_size, int min_index = 0, int max_index = -1, int default_index = 0);
         // Display text at the bottom of the screen.
         // The font size is automatically choosen based on the text lenght.
         // \param text Text to display. Text longer than 21 will be truncated.

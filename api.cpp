@@ -15,6 +15,7 @@ void Api::init() {
 }
 
 void Api::init_display() {
+    sleep_ms(500); // Wait for the OLED to settle
     oledInit(&m_oled, OLED_128x64, 0x3d, 0, 0, 1, SDA_PIN, SCL_PIN, RESET_PIN, 1000000L);
     oledFill(&m_oled, 0,1);
     oledSetContrast(&m_oled, OLED_DEFAULT_CONTRAST);
@@ -183,6 +184,81 @@ int Api::gui_popup_intchoice(std::string title, std::string body, int min_num, i
     oledFill(&m_oled, 0, 1);
     m_send_button_press_to_app = true;
     return current_num;
+}
+
+void Api::gui_popup_strchoice_footer(const char selection[]) {
+    std::string buf{selection};
+    buf.insert(0, "Select: ");
+
+    if (buf.size() > 36) // 2 lines of 18 chars
+        buf.resize(36);
+
+    // Choose most adapted font size
+    int font;
+    int chars_per_line;
+    if (buf.size() > 26) {
+        font = FONT_6x8;
+        chars_per_line = 18;
+    } else {
+        font = FONT_8x8;
+        chars_per_line = 13;
+    }
+
+    // Make selection text fit by adding '\n' at a regular interval
+    // TODO: Make this a private function
+    int since_nl = 0; // Characters since newline
+    for (std::string::size_type i = 0; i < buf.size(); ++i) {
+        if (buf[i] == '\n')
+            since_nl = 0;
+        else if (since_nl++ == chars_per_line) {
+            buf.insert(i, 1, '\n');
+            since_nl = 0; // Probably unneeded
+        }
+    }
+
+    oledRectangle(&m_oled, 9,47, 119,63, 1, 1); // Footer background, FIXME pixel bleeding
+    oledWriteString(&m_oled, 0,10,6, buf.c_str(), font, 1, 0);
+    m_writebb_needed = true; display_write_backbuffer();
+}
+
+int Api::gui_popup_strchoice(std::string title, std::string body, const char *choices[27], int choices_size, int min_index, int max_index, int default_index){
+    m_button_last_pressed = BUTTON_NONE;
+    m_send_button_press_to_app = false;
+    if (max_index == -1)
+        max_index = choices_size-1;
+
+    int current_index = default_index;
+
+    title.insert(0, "Choose|"); // TODO: Could be made nicer with a custom char instead of pipe char
+    gui_popup_generic(title, body, 13, 39); // 39: 3 lines of body text, to leave space for selection string
+    gui_popup_strchoice_footer(choices[current_index]);
+
+    do {
+        m_button_last_pressed = BUTTON_NONE;
+        sleep_ms(50); // TODO: use _wfi()
+        switch (m_button_last_pressed) {
+            case BUTTON_UP:
+                current_index += 1;
+                if (current_index > max_index)
+                    current_index = max_index;
+                break;
+            case BUTTON_DOWN:
+                current_index -= 1;
+                if (current_index < min_index)
+                    current_index = min_index;
+                break;
+            case BUTTON_MODE:
+                current_index = default_index;
+                break;
+        }
+        if (m_button_last_pressed)
+            gui_popup_strchoice_footer(choices[current_index]);
+    } while (m_button_last_pressed != BUTTON_SELECT);    
+
+    // Give back control to running app
+    oledFill(&m_oled, 0, 1);
+    m_send_button_press_to_app = true;
+    return current_index;
 }
 
 bool Api::gui_footer_text(std::string text, int offset_x, int offset_row, bool invert, bool no_bg) {

@@ -1740,20 +1740,23 @@ unsigned char c, *s, ucTemp[40];
            if (iScroll < 6) // if characters are visible
            {
                c = szMsg[i] - 32;
-               // we can't directly use the pointer to FLASH memory, so copy to a local buffer
-               ucTemp[0] = 0;
-               memcpy(&ucTemp[1], &ucSmallFont[(int)c*5], 5);
-               if (bInvert) InvertBytes(ucTemp, 6);
-               iLen = 6 - iFontSkip;
-               if (pOLED->iCursorX + iLen > pOLED->oled_x) // clip right edge
-                   iLen = pOLED->oled_x - pOLED->iCursorX;
-               oledWriteDataBlock(pOLED, &ucTemp[iFontSkip], iLen, bRender); // write character pattern
-    //         oledCachedWrite(ucTemp, 6);
-               pOLED->iCursorX += iLen;
+               if (szMsg[i] != '\n') { // Do not draw the new line char
+                  // we can't directly use the pointer to FLASH memory, so copy to a local buffer
+                  ucTemp[0] = 0;
+                  memcpy(&ucTemp[1], &ucSmallFont[(int)c*5], 5);
+                  if (bInvert) InvertBytes(ucTemp, 6);
+                  iLen = 6 - iFontSkip;
+                  if (pOLED->iCursorX + iLen > pOLED->oled_x) // clip right edge
+                      iLen = pOLED->oled_x - pOLED->iCursorX;
+                  oledWriteDataBlock(pOLED, &ucTemp[iFontSkip], iLen, bRender); // write character pattern
+        //         oledCachedWrite(ucTemp, 6);
+                  pOLED->iCursorX += iLen;
+               }
                iFontSkip = 0;
-               if (pOLED->iCursorX >= pOLED->oled_x-5 && pOLED->oled_wrap) // word wrap enabled?
+
+               if ((pOLED->iCursorX >= pOLED->oled_x-5 && pOLED->oled_wrap) || szMsg[i] == '\n') // word wrap enabled? or newline char
                {
-                 pOLED->iCursorX = 0; // start at the beginning of the next line
+                 pOLED->iCursorX = x; // start at the beginning of the next line
                  pOLED->iCursorY++;
                  oledSetPosition(pOLED, pOLED->iCursorX, pOLED->iCursorY, bRender);
                }
