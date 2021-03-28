@@ -13,6 +13,7 @@
 int current_app = 0;
 bool is_sleeping = false;
 bool app_ready = true;
+bool app_rendering = false;
 Api app_api;
 
 #define NUMBER_OF_APPS 2
@@ -77,6 +78,7 @@ bool repeating_callback(struct repeating_timer *t) {
 
 void app_switch(int old_appid, int new_appid) {
     app_ready = false;
+    while (app_rendering); // Wait for the app to finish rendering cycle
     if (APPS_DESTROY_ON_EXIT[old_appid]) {
         app_destroy(old_appid);
     }
@@ -97,8 +99,10 @@ int main() {
 
     while (1) {
         if (app_ready && !is_sleeping) {
-            app_render(current_app); // FIXME: This may cause race conditions when switching app
+            app_rendering = true;
+            app_render(current_app);
             app_api.display_write_backbuffer();
+            app_rendering = false;
         }
         sleep_ms(app_api.performance_render_interval_get());
     }
