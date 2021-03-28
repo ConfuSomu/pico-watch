@@ -95,8 +95,10 @@ int main() {
     app_init(current_app);
 
     while (1) {
-        if (app_ready && !is_sleeping)
+        if (app_ready && !is_sleeping) {
             app_render(current_app); // FIXME: This may cause race conditions when switching app
+            app_api.display_write_backbuffer();
+        }
         sleep_ms(app_api.performance_render_interval_get());
     }
     return 0;

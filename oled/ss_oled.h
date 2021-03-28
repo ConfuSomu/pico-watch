@@ -129,7 +129,7 @@ void oledSetTextWrap(SSOLED *pOLED, int bWrap);
 //
 //  Returns 0 for success, -1 for invalid parameter
 //
-int oledWriteString(SSOLED *pOLED, int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender);
+int oledWriteString(SSOLED *pOLED, int iScrollX, int x, int y, const char *szMsg, int iSize, int bInvert, int bRender);
 //
 // Fill the frame buffer with a byte pattern
 // e.g. all off (0x00) or all on (0xff)
