@@ -87,6 +87,7 @@ void app_switch(int old_appid, int new_appid) {
 
 int main() {
     init_all();
+    printf("~~~==~~~");
     init_buttons();
     app_api.init();
     struct repeating_timer timer;

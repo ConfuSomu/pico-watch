@@ -13,6 +13,7 @@ set(PICO_SDK_PATH "/home/pi/pico/pico-sdk")
 include(pico_sdk_import.cmake)
 
 project(pico-watch C CXX)
+add_compile_definitions(PICO_DEBUG_MALLOC PICO_DEBUG_MALLOC_LOW_WATER=1)# PICO_MALLOC_PANIC)
 
 # Initialise the Pico SDK
 pico_sdk_init()
@@ -43,6 +44,7 @@ add_executable(pico-watch
 
 pico_set_program_name(pico-watch "pico-watch")
 pico_set_program_version(pico-watch "0.1")
+# To access uart on a Pico connected directly to a Raspberry Pi (4 B): `minicom -b 115200 -o -D /dev/ttyS0`
 pico_enable_stdio_uart(pico-watch 1)
 
 # Add the standard library to the build
