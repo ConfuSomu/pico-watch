@@ -311,6 +311,10 @@ bool Api::datetime_get(datetime_t *t) {
     return rtc_get_datetime(t);
 }
 
+bool Api::datetime_set(datetime_t *t) {
+    return rtc_set_datetime(t);
+}
+
 int Api::performance_render_interval_get() {
     return m_app_render_interval;
 }

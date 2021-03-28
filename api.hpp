@@ -96,7 +96,15 @@ class Api {
         // An app should choose the lowest performance that can make it function. Set in init(). Only when required, higher performance should be used.
         // \param perf See Api::perf_modes enum for possible values
         bool performance_set(int perf);
+        // Get the current datetime
+        // \param t Pointer to the datetime structure in which the datetime wil be stored
+        // \return true if the call to the SDK was successful, else false.
         bool datetime_get(datetime_t *t);
+        // Set the current datetime
+        // TODO: Not every app should be allowed to set the datetime. Only app_id<2 (home_screen and settings) should be allowed: return false when setting is blocked.
+        // \param t Pointer to the datetime structure
+        // \return true if the call to the SDK was successful, else false.
+        bool datetime_set(datetime_t *t);
         // Get app's current render interval
         // \return Value in millisec
         int performance_render_interval_get();
