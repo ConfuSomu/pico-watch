@@ -1,5 +1,3 @@
-# Generated Cmake Pico project file
-
 cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_C_STANDARD 11)
@@ -14,6 +12,14 @@ include(pico_sdk_import.cmake)
 
 project(pico-watch C CXX)
 add_compile_definitions(PICO_DEBUG_MALLOC PICO_DEBUG_MALLOC_LOW_WATER=1)# PICO_MALLOC_PANIC)
+
+# Increase heap size, this should leave:
+# sram_size = SRAM_END(=0x20042000) - SRAM_BASE(=0x20000000) = 0x42000
+# stack_size = 0x800 (default)
+# heap_size = 0x5000 (changed)
+# mem_left = sram_size - (stack_size + heap_size) = 0x3c800
+# If still having problems: see __malloc_current_mallinfo.arena variable in debugger. See also https://stackoverflow.com/a/12825223 for arena definition.
+add_compile_definitions(PICO_HEAP_SIZE=0x5000)
 
 # Initialise the Pico SDK
 pico_sdk_init()
