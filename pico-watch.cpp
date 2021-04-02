@@ -78,6 +78,8 @@ bool repeating_callback(struct repeating_timer *t) {
 
 void app_switch(int old_appid, int new_appid) {
     app_ready = false;
+    // FIXME: race condition when pressing on HOME while app is rendering!
+    // The system is blocked waiting for the app to finish rendering, which will never happen. To fix the problem, app switching has to be a flag (c.f struct) that is set, and checked before rendering app. "if (app_switching.requested) app_switch(...);" We will not need anymore the app_rendering flag, as the check is done while the app is not rendering.
     while (app_rendering); // Wait for the app to finish rendering cycle
     if (APPS_DESTROY_ON_EXIT[old_appid]) {
         app_destroy(old_appid);
