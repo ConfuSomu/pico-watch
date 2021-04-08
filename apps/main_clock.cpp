@@ -32,7 +32,7 @@ namespace app_main_clock {
                 t->year,
                 t->month,
                 t->day,
-                DATETIME_DOWS[t->dotw - 1]);
+                DATETIME_DOWS[t->dotw]);
     };
 
     void show_datetime(Api *app_api) {
