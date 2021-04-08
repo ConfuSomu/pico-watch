@@ -24,6 +24,10 @@ class Api {
         void gui_popup_strchoice_footer(const char selection[]);
     public:
         bool m_send_button_press_to_app = true;
+        enum app_init_return_status {
+            OK = 0,
+            MALLOC_FAILED = 1
+        };
         enum perf_modes {
             LOW_POWER,
             NORMAL_PERF,
@@ -95,7 +99,7 @@ class Api {
         // FIXME: function currently does nothing!
         // An app should choose the lowest performance that can make it function. Set in init(). Only when required, higher performance should be used.
         // \param perf See Api::perf_modes enum for possible values
-        bool performance_set(int perf);
+        bool performance_set(int perf_mode);
         // Get the current datetime
         // \param t Pointer to the datetime structure in which the datetime wil be stored
         // \return true if the call to the SDK was successful, else false.

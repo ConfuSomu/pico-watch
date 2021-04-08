@@ -29,10 +29,31 @@ int APPS_IS_INIT[NUMBER_OF_APPS] = {0, 0}; // Only run in background if init
 int app_init(int app_id) {
     app_api.display_fill(0,1); // Clear OLED
     app_api.performance_render_interval_set(500); // Reset interval
+
     if (!APPS_IS_INIT[app_id]) {
+        int status = (*APPS_FUNC_INIT[app_id])(&app_api);
+
+        switch (status) {
+            case Api::app_init_return_status::MALLOC_FAILED:
+                printf("App init failed (alloc), ");
+                for (int i=0; i<10; i++) {
+                    if ((*APPS_FUNC_INIT[app_id])(&app_api) != Api::app_init_return_status::MALLOC_FAILED) {
+                        printf("worked after %d tries\n", i);
+                        APPS_IS_INIT[app_id] = 1;
+                        return app_id;
+                    }
+                }
+                // Instead, the current app could continue running: return current_app
+                printf("gave up, launching app 0\n");
+                return app_init(0); // Note: this has to work (and should)
+            
+            default: // OK and unhandled status codes
+                printf("App init, status: %d\n", status);
+                break;
+        }
         APPS_IS_INIT[app_id] = 1;
-        return (*APPS_FUNC_INIT[app_id])(&app_api);
     }
+    return app_id;
 }
 
 int app_render(int app_id) {
@@ -81,11 +102,9 @@ void app_switch(int old_appid, int new_appid) {
     // FIXME: race condition when pressing on HOME while app is rendering!
     // The system is blocked waiting for the app to finish rendering, which will never happen. To fix the problem, app switching has to be a flag (c.f struct) that is set, and checked before rendering app. "if (app_switching.requested) app_switch(...);" We will not need anymore the app_rendering flag, as the check is done while the app is not rendering.
     while (app_rendering); // Wait for the app to finish rendering cycle
-    if (APPS_DESTROY_ON_EXIT[old_appid]) {
+    if (APPS_DESTROY_ON_EXIT[old_appid])
         app_destroy(old_appid);
-    }
-    app_init(new_appid);
-    current_app = new_appid;
+    current_app = app_init(new_appid);
     app_ready = true;
 }
 
