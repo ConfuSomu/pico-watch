@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
+#include "hardware/sync.h"
 #include "hardware/rtc.h"
 #include "pico/util/datetime.h"
 
@@ -125,7 +126,8 @@ int main() {
             app_api.display_write_backbuffer();
             app_rendering = false;
         }
-        sleep_ms(app_api.performance_render_interval_get());
+        if (is_sleeping) __wfi();
+        else sleep_ms(app_api.performance_render_interval_get());
     }
     return 0;
 }

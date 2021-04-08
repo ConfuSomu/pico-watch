@@ -60,7 +60,7 @@ target_link_libraries(pico-watch pico_stdlib)
 target_link_libraries(pico-watch
         Oled
         hardware_rtc
-#        hardware_clocks
+        hardware_sync # For use of __wfi()
         )
 
 pico_add_extra_outputs(pico-watch)
