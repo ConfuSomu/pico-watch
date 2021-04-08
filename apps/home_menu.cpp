@@ -12,7 +12,6 @@ extern bool rtc_get_datetime(datetime_t *t);
 
 namespace app_home_menu {
     char *APPS_NAME[NUMBER_OF_APPS] = {"Home", "Clock"};
-    char *pressed_button;
     int *selected_app;
 
     void title_str(char *buf, uint buf_size, const datetime_t *t) {
@@ -38,7 +37,6 @@ namespace app_home_menu {
     // Rendering of app
     int render(Api *app_api) {
         show_title(app_api);
-        app_api->display_write_string(0,0,2, pressed_button, FONT_6x8, 0, 1);
         app_api->display_write_string(0,5,3, APPS_NAME[*selected_app], FONT_12x16, 0, 1);
         return 0;
     }
@@ -47,29 +45,20 @@ namespace app_home_menu {
     // Drawing on screen should be done in the render function.
     int btnpressed(Api *app_api, uint gpio) {
         switch (gpio) {
-            case BUTTON_HOME:
-                *pressed_button = 'H'; break;
             case BUTTON_SELECT:
-                *pressed_button = 'S';
                 app_switch(0, *selected_app);
-                break;
-            case BUTTON_MODE:
-                *pressed_button = 'M'; break;
+                return 0;
             case BUTTON_DOWN:
-                *pressed_button = 'D';
                 *selected_app--;
                 break;
             case BUTTON_UP:
-                *pressed_button = 'U';
                 *selected_app++;
                 break;
-            default:
-                *pressed_button = '?';
         }
         if (*selected_app > NUMBER_OF_APPS-1) {
-            *selected_app = NUMBER_OF_APPS-1; *pressed_button = '>';
+            *selected_app = NUMBER_OF_APPS-1;
         } else if (*selected_app < NUMBER_OF_APPS-1) {
-            *selected_app = 0; *pressed_button = '<';
+            *selected_app = 0;
         }
         return 0;
     }
@@ -77,9 +66,8 @@ namespace app_home_menu {
     // Initlisation of the app.
     int init(Api *app_api) {
         app_api->performance_set(Api::perf_modes::LOW_POWER);
-        pressed_button = new char; *pressed_button = '*';
-        selected_app = new int; *selected_app = 0; // Make sure to init the values to something known!
-        return 0; // return 1 when function not implemented
+        selected_app = new int; *selected_app = 0; // Make sure to init the values to known value
+        return Api::app_init_return_status::OK; // return 1 when function not implemented
     }
 
     // Processor intensive operations and functions related to drawing to the screen should only be done when the app is in_foreground(=1). This function is only called when the app is init.
@@ -89,8 +77,7 @@ namespace app_home_menu {
 
     // Destruction of app, deinitlisation should be done here. This is only called if the app's APPS_DESTROY_ON_EXIT is set to 1. When it is not a "service" app.
     int destroy(Api *app_api) {
-        delete pressed_button; pressed_button = nullptr;
         delete selected_app; selected_app = nullptr;
-        return 1;
+        return 0;
     }
 }
