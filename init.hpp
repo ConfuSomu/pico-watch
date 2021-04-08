@@ -11,12 +11,12 @@
 // Initial date & time
 // The idea is to have the compiler set the date at compile-time.
 // DOTW: 0 is Sunday
-#define INIT_DATETIME_YEAR 2020
-#define INIT_DATETIME_MONTH 06
-#define INIT_DATETIME_DAY 05
-#define INIT_DATETIME_DOTW 5
-#define INIT_DATETIME_HOUR 15
-#define INIT_DATETIME_MIN 45
+#define INIT_DATETIME_YEAR 2021
+#define INIT_DATETIME_MONTH 4
+#define INIT_DATETIME_DAY 8
+#define INIT_DATETIME_DOTW 4
+#define INIT_DATETIME_HOUR 13
+#define INIT_DATETIME_MIN 53
 #define INIT_DATETIME_SEC 00
 
 // Time (ms) before entering sleep
