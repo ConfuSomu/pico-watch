@@ -27,7 +27,7 @@ void Api::display_power(bool mode) {
     oledPower(&m_oled, mode);
 }
 
-int Api::display_write_string(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender) {
+int Api::display_write_string(int iScrollX, int x, int y, const char *szMsg, int iSize, int bInvert, int bRender) {
     oledWriteString(&m_oled, iScrollX, x, y, szMsg, iSize, bInvert, 0);
     m_writebb_needed = true;
 }

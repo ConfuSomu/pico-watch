@@ -38,7 +38,7 @@ class Api {
         void init();
         // Control the display's power (on or off)
         void display_power(bool mode);
-        int display_write_string(int iScrollX, int x, int y, char *szMsg, int iSize, int bInvert, int bRender);
+        int display_write_string(int iScrollX, int x, int y, const char *szMsg, int iSize, int bInvert, int bRender);
         void display_fill(unsigned char ucData, int bRender);
         void display_draw_line(int x1, int y1, int x2, int y2, int bRender);
         void display_draw_rectange(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled);
