@@ -13,8 +13,8 @@ extern bool rtc_get_datetime(datetime_t *t);
 
 namespace app_home_menu {
     const char *APPS_NAME[NUMBER_OF_APPS] = {"Home", "Clock"};
-    int *selected_app = nullptr;
-    char *display_app_name = nullptr;
+    int selected_app = 0;
+    char display_app_name[SIZE_APP_NAME];
 
     void title_str(char *buf, uint buf_size, const datetime_t *t) {
         snprintf(buf,
@@ -48,34 +48,30 @@ namespace app_home_menu {
     int btnpressed(Api *app_api, uint gpio) {
         switch (gpio) {
             case BUTTON_SELECT:
-                app_switch(0, *selected_app);
+                app_switch(0, selected_app);
                 return 0;
             case BUTTON_DOWN:
-                *selected_app--;
+                selected_app--;
                 break;
             case BUTTON_UP:
-                *selected_app++;
+                selected_app++;
                 break;
         }
-        if (*selected_app > NUMBER_OF_APPS-1) {
-            *selected_app = NUMBER_OF_APPS-1;
-        } else if (*selected_app < 0) {
-            *selected_app = 0;
+        if (selected_app > NUMBER_OF_APPS-1) {
+            selected_app = NUMBER_OF_APPS-1;
+        } else if (selected_app < 0) {
+            selected_app = 0;
         }
         // Add spaces to avoid "ghost" characters from app names displayed before
-        snprintf(display_app_name, SIZE_APP_NAME, "%s             ", APPS_NAME[*selected_app]);
+        snprintf(display_app_name, SIZE_APP_NAME, "%s             ", APPS_NAME[selected_app]);
         return 0;
     }
 
     // Initlisation of the app.
     int init(Api *app_api) {
         app_api->performance_set(Api::perf_modes::LOW_POWER);
-        selected_app = new int; *selected_app = 0;
-        display_app_name = new char[SIZE_APP_NAME]{' '};
-        if (!(selected_app or display_app_name))
-            return Api::app_init_return_status::MALLOC_FAILED;
-        
-        snprintf(display_app_name, SIZE_APP_NAME, "%s", APPS_NAME[0]); // Could also use strncpy
+        selected_app = 0;
+        snprintf(display_app_name, SIZE_APP_NAME, "%s", APPS_NAME[0]);
         return Api::app_init_return_status::OK;
     }
 
@@ -86,8 +82,6 @@ namespace app_home_menu {
 
     // Destruction of app, deinitlisation should be done here. This is only called if the app's APPS_DESTROY_ON_EXIT is set to 1. When it is not a "service" app.
     int destroy(Api *app_api) {
-        delete selected_app; selected_app = nullptr;
-        delete[] display_app_name; display_app_name = nullptr;
         return 0;
     }
 }
