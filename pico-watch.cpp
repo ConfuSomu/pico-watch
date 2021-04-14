@@ -31,6 +31,11 @@ int app_init(int app_id) {
     app_api.display_fill(0,1); // Clear OLED
     app_api.performance_render_interval_set(500); // Reset interval
 
+    if (app_id > NUMBER_OF_APPS-1 or app_id < 0) {
+        printf("Tried to init app %d", app_id);
+        return app_init(0);
+    }
+
     if (!APPS_IS_INIT[app_id]) {
         int status = (*APPS_FUNC_INIT[app_id])(&app_api);
 
