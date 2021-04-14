@@ -9,10 +9,12 @@ extern void app_switch(int old_appid, int new_appid);
 extern bool rtc_get_datetime(datetime_t *t);
 
 #define NUMBER_OF_APPS 2
+#define SIZE_APP_NAME 12
 
 namespace app_home_menu {
-    char *APPS_NAME[NUMBER_OF_APPS] = {"Home", "Clock"};
-    int *selected_app;
+    const char *APPS_NAME[NUMBER_OF_APPS] = {"Home", "Clock"};
+    int *selected_app = nullptr;
+    char *display_app_name = nullptr;
 
     void title_str(char *buf, uint buf_size, const datetime_t *t) {
         snprintf(buf,
@@ -37,7 +39,7 @@ namespace app_home_menu {
     // Rendering of app
     int render(Api *app_api) {
         show_title(app_api);
-        app_api->display_write_string(0,5,3, APPS_NAME[*selected_app], FONT_12x16, 0, 1);
+        app_api->display_write_string(0,5,3, display_app_name, FONT_12x16, 0, 1);
         return 0;
     }
 
@@ -57,17 +59,24 @@ namespace app_home_menu {
         }
         if (*selected_app > NUMBER_OF_APPS-1) {
             *selected_app = NUMBER_OF_APPS-1;
-        } else if (*selected_app < NUMBER_OF_APPS-1) {
+        } else if (*selected_app < 0) {
             *selected_app = 0;
         }
+        // Add spaces to avoid "ghost" characters from app names displayed before
+        snprintf(display_app_name, SIZE_APP_NAME, "%s             ", APPS_NAME[*selected_app]);
         return 0;
     }
 
     // Initlisation of the app.
     int init(Api *app_api) {
         app_api->performance_set(Api::perf_modes::LOW_POWER);
-        selected_app = new int; *selected_app = 0; // Make sure to init the values to known value
-        return Api::app_init_return_status::OK; // return 1 when function not implemented
+        selected_app = new int; *selected_app = 0;
+        display_app_name = new char[SIZE_APP_NAME]{' '};
+        if (!(selected_app or display_app_name))
+            return Api::app_init_return_status::MALLOC_FAILED;
+        
+        snprintf(display_app_name, SIZE_APP_NAME, "%s", APPS_NAME[0]); // Could also use strncpy
+        return Api::app_init_return_status::OK;
     }
 
     // Processor intensive operations and functions related to drawing to the screen should only be done when the app is in_foreground(=1). This function is only called when the app is init.
@@ -78,6 +87,7 @@ namespace app_home_menu {
     // Destruction of app, deinitlisation should be done here. This is only called if the app's APPS_DESTROY_ON_EXIT is set to 1. When it is not a "service" app.
     int destroy(Api *app_api) {
         delete selected_app; selected_app = nullptr;
+        delete[] display_app_name; display_app_name = nullptr;
         return 0;
     }
 }
