@@ -11,10 +11,7 @@
 #include "apps/main_clock.hpp"
 #include "apps/home_menu.hpp"
 
-int current_app = 0;
-bool is_sleeping = false;
-bool app_ready = true;
-bool app_rendering = false;
+global_status g_s;
 Api app_api;
 
 #define NUMBER_OF_APPS 2
@@ -79,18 +76,18 @@ int app_destroy(int app_id) {
 
 int app_bgrefresh(int app_id) {
     if (APPS_IS_INIT[app_id])
-        return (*APPS_FUNC_BGREFRESH[app_id])(&app_api, app_id==current_app);
+        return (*APPS_FUNC_BGREFRESH[app_id])(&app_api, app_id==g_s.current_app);
 }
 
 bool repeating_callback(struct repeating_timer *t) {
     // Enter shallow sleep mode when needed
-    uint32_t time_since_last_press = to_ms_since_boot(get_absolute_time())-button_last_pressed_time;
-    if (!is_sleeping && time_since_last_press > ENTER_SLEEP_DELAY) {
-        is_sleeping = true;
+    uint32_t time_since_last_press = to_ms_since_boot(get_absolute_time())-g_s.button_last_pressed_time;
+    if (!g_s.is_sleeping && time_since_last_press > ENTER_SLEEP_DELAY) {
+        g_s.is_sleeping = true;
         app_api.performance_set(Api::perf_modes::ENTER_SHALLOW_SLEEP);
         app_api.display_power(false);
-    } else if (is_sleeping && time_since_last_press < ENTER_SLEEP_DELAY) {
-        is_sleeping = false;
+    } else if (g_s.is_sleeping && time_since_last_press < ENTER_SLEEP_DELAY) {
+        g_s.is_sleeping = false;
         app_api.performance_set(Api::perf_modes::EXIT_SHALLOW_SLEEP);
         app_api.display_power(true);
     }
@@ -102,14 +99,14 @@ bool repeating_callback(struct repeating_timer *t) {
 }
 
 void app_switch(int old_appid, int new_appid) {
-    app_ready = false;
+    g_s.app_ready = false;
     // FIXME: race condition when pressing on HOME while app is rendering!
     // The system is blocked waiting for the app to finish rendering, which will never happen. To fix the problem, app switching has to be a flag (c.f struct) that is set, and checked before rendering app. "if (app_switching.requested) app_switch(...);" We will not need anymore the app_rendering flag, as the check is done while the app is not rendering.
-    while (app_rendering); // Wait for the app to finish rendering cycle
+    while (g_s.app_rendering); // Wait for the app to finish rendering cycle
     if (APPS_DESTROY_ON_EXIT[old_appid])
         app_destroy(old_appid);
-    current_app = app_init(new_appid);
-    app_ready = true;
+    g_s.current_app = app_init(new_appid);
+    g_s.app_ready = true;
 }
 
 int main() {
@@ -120,16 +117,16 @@ int main() {
     struct repeating_timer timer;
     add_repeating_timer_ms(250, repeating_callback, NULL, &timer); // TODO: Execute on core1
 
-    app_init(current_app);
+    app_init(g_s.current_app);
 
     while (1) {
-        if (app_ready && !is_sleeping) {
-            app_rendering = true;
-            app_render(current_app);
+        if (g_s.app_ready && !g_s.is_sleeping) {
+            g_s.app_rendering = true;
+            app_render(g_s.current_app);
             app_api.display_write_backbuffer();
-            app_rendering = false;
+            g_s.app_rendering = false;
         }
-        if (is_sleeping) __wfi();
+        if (g_s.is_sleeping) __wfi();
         else sleep_ms(app_api.performance_render_interval_get());
     }
     return 0;
