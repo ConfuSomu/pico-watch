@@ -16,7 +16,8 @@ struct global_status {
     int current_app = 0;
     bool is_sleeping = false;
     bool app_ready = true;
-    bool app_rendering = false;
+    bool app_switch_requested = false;
+    int app_switch_to_app = 0;
 
     // Debounce control
     // See https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=301522#p1812063

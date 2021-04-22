@@ -98,11 +98,15 @@ bool repeating_callback(struct repeating_timer *t) {
     return true;
 }
 
+void app_switch_request(int to_appid) {
+    if (!g_s.app_switch_requested)
+        g_s.app_switch_to_app = to_appid;
+    g_s.app_switch_requested = true;
+    app_api.performance_render_interval_set(0); // This will be reset on new app init
+}
+
 void app_switch(int old_appid, int new_appid) {
     g_s.app_ready = false;
-    // FIXME: race condition when pressing on HOME while app is rendering!
-    // The system is blocked waiting for the app to finish rendering, which will never happen. To fix the problem, app switching has to be a flag (c.f struct) that is set, and checked before rendering app. "if (app_switching.requested) app_switch(...);" We will not need anymore the app_rendering flag, as the check is done while the app is not rendering.
-    while (g_s.app_rendering); // Wait for the app to finish rendering cycle
     if (APPS_DESTROY_ON_EXIT[old_appid])
         app_destroy(old_appid);
     g_s.current_app = app_init(new_appid);
@@ -120,12 +124,16 @@ int main() {
     app_init(g_s.current_app);
 
     while (1) {
+        if (g_s.app_switch_requested) {
+            app_switch(g_s.current_app, g_s.app_switch_to_app);
+            g_s.app_switch_requested = false;
+        }
+        
         if (g_s.app_ready && !g_s.is_sleeping) {
-            g_s.app_rendering = true;
             app_render(g_s.current_app);
             app_api.display_write_backbuffer();
-            g_s.app_rendering = false;
         }
+        
         if (g_s.is_sleeping) __wfi();
         else sleep_ms(app_api.performance_render_interval_get());
     }

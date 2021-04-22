@@ -5,7 +5,7 @@
 #include "api.hpp"
 // From pico-watch.c:
 extern int app_btnpressed(int app_id, uint gpio);
-extern void app_switch(int old_appid, int new_appid);
+extern void app_switch_request(int);
 extern Api app_api;
 
 //const uint BUTTON_PINS[] = {BUTTON_HOME, BUTTON_SELECT, BUTTON_MODE, BUTTON_UP, BUTTON_DOWN};
@@ -15,7 +15,7 @@ void gpio_interrupt_cb(uint gpio, uint32_t events) {
 
         if (app_api.m_interpret_button_press) {
             if (gpio == BUTTON_HOME && (g_s.current_app != 0)) // Home app
-                app_switch(g_s.current_app, 0);
+                app_switch_request(0);
             else
                 app_btnpressed(g_s.current_app, gpio);
         }
