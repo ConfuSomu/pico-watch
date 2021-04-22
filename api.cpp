@@ -97,7 +97,7 @@ void Api::gui_popup_generic(std::string &title, std::string &body, int max_title
 
 bool Api::gui_popup_text(std::string title, std::string body){
     m_button_last_pressed = BUTTON_NONE;
-    m_send_button_press_to_app = false;
+    m_interpret_button_press = false;
 
     gui_popup_generic(title, body);
 
@@ -105,13 +105,13 @@ bool Api::gui_popup_text(std::string title, std::string body){
         sleep_ms(50); // TODO: use _wfi()
     // Give back control to running app
     oledFill(&m_oled, 0, 1);
-    m_send_button_press_to_app = true;
+    m_interpret_button_press = true;
     return true;
 }
 
 bool Api::gui_popup_booleanchoice(std::string title, std::string body){
     m_button_last_pressed = BUTTON_NONE;
-    m_send_button_press_to_app = false;
+    m_interpret_button_press = false;
 
     title.insert(0, "Choice|"); // TODO: Could be made nicer with a custom char that uses the whole height, this would give a visible separation, with two "text blocks" composing the title
     gui_popup_generic(title, body);
@@ -132,7 +132,7 @@ bool Api::gui_popup_booleanchoice(std::string title, std::string body){
     }
     // Give back control to running app
     oledFill(&m_oled, 0, 1);
-    m_send_button_press_to_app = true;
+    m_interpret_button_press = true;
     return choice;
 }
 
@@ -150,7 +150,7 @@ void Api::gui_popup_intchoice_footer(int current_num, int min_num, int max_num) 
 
 int Api::gui_popup_intchoice(std::string title, std::string body, int min_num, int max_num, int default_num, int step){
     m_button_last_pressed = BUTTON_NONE;
-    m_send_button_press_to_app = false;
+    m_interpret_button_press = false;
 
     int current_num = default_num;
 
@@ -182,7 +182,7 @@ int Api::gui_popup_intchoice(std::string title, std::string body, int min_num, i
 
     // Give back control to running app
     oledFill(&m_oled, 0, 1);
-    m_send_button_press_to_app = true;
+    m_interpret_button_press = true;
     return current_num;
 }
 
@@ -223,7 +223,7 @@ void Api::gui_popup_strchoice_footer(const char selection[]) {
 
 int Api::gui_popup_strchoice(std::string title, std::string body, const char *choices[27], int choices_size, int min_index, int max_index, int default_index){
     m_button_last_pressed = BUTTON_NONE;
-    m_send_button_press_to_app = false;
+    m_interpret_button_press = false;
     if (max_index == -1)
         max_index = choices_size-1;
 
@@ -257,7 +257,7 @@ int Api::gui_popup_strchoice(std::string title, std::string body, const char *ch
 
     // Give back control to running app
     oledFill(&m_oled, 0, 1);
-    m_send_button_press_to_app = true;
+    m_interpret_button_press = true;
     return current_index;
 }
 

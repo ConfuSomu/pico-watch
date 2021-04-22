@@ -18,10 +18,14 @@ const int button_delay_time = 50; // 50ms worked fine for me .... change it to y
 
 void gpio_interrupt_cb(uint gpio, uint32_t events) {
     if ((to_ms_since_boot(get_absolute_time())-button_last_pressed_time)>button_delay_time) {
-        if (gpio == BUTTON_HOME && (current_app != 0)) // Home app
-            app_switch(current_app, 0);
-        else
-            app_btnpressed(current_app, gpio);
+
+        if (app_api.m_interpret_button_press) {
+            if (gpio == BUTTON_HOME && (current_app != 0)) // Home app
+                app_switch(current_app, 0);
+            else
+                app_btnpressed(current_app, gpio);
+        }
+
         app_api.button_last_set(gpio);
         button_last_pressed_time = to_ms_since_boot(get_absolute_time());
     }

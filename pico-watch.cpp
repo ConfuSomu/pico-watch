@@ -67,9 +67,7 @@ int app_render(int app_id) {
 }
 
 int app_btnpressed(int app_id, uint gpio) {
-    if (app_api.m_send_button_press_to_app)
-        return (*APPS_FUNC_BTNPRESS[app_id])(&app_api, gpio);
-    return 2;
+    return (*APPS_FUNC_BTNPRESS[app_id])(&app_api, gpio);
 }
 
 int app_destroy(int app_id) {
