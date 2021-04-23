@@ -11,7 +11,7 @@ namespace app_main_clock {
     void time_as_str(char *buf, uint buf_size, const datetime_t *t) {
         snprintf(buf,
                 buf_size,
-                "%d:%02d:%02d",
+                "%d:%02d:%02d ",
                 t->hour,
                 t->min,
                 t->sec);
