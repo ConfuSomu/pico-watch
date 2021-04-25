@@ -81,7 +81,7 @@ int app_bgrefresh(int app_id) {
 
 bool repeating_callback(struct repeating_timer *t) {
     // Enter shallow sleep mode when needed
-    uint32_t time_since_last_press = to_ms_since_boot(get_absolute_time())-g_s.button_last_pressed_time;
+    auto time_since_last_press = time_since_button_press();
     if (!g_s.is_sleeping && time_since_last_press > ENTER_SLEEP_DELAY) {
         g_s.is_sleeping = true;
         app_api.performance_set(Api::perf_modes::ENTER_SHALLOW_SLEEP);

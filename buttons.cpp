@@ -11,7 +11,7 @@ extern Api app_api;
 //const uint BUTTON_PINS[] = {BUTTON_HOME, BUTTON_SELECT, BUTTON_MODE, BUTTON_UP, BUTTON_DOWN};
 
 void gpio_interrupt_cb(uint gpio, uint32_t events) {
-    if ((to_ms_since_boot(get_absolute_time())-g_s.button_last_pressed_time)>g_s.button_delay_time) {
+    if (button_time_since_press() > g_s.button_delay_time) {
 
         if (app_api.m_interpret_button_press) {
             if (gpio == BUTTON_HOME && (g_s.current_app != 0)) // Home app
@@ -23,6 +23,11 @@ void gpio_interrupt_cb(uint gpio, uint32_t events) {
         app_api.button_last_set(gpio);
         g_s.button_last_pressed_time = to_ms_since_boot(get_absolute_time());
     }
+}
+
+unsigned long time_since_button_press() {
+    // FIXME: This does not correct overflows
+    return to_ms_since_boot(get_absolute_time())-g_s.button_last_pressed_time;
 }
 
 void init_buttons() {

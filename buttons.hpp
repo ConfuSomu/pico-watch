@@ -30,5 +30,6 @@ extern global_status g_s;
 
 void init_buttons();
 void gpio_interrupt_cb(uint gpio, uint32_t events);
+unsigned long time_since_button_press();
 
 #endif
