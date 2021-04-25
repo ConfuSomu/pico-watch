@@ -30,6 +30,9 @@
         "type_traits": "cpp",
         "limits": "cpp",
         "*.tcc": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "pico.h": "c",
+        "config.h": "c",
+        "config_autogen.h": "c"
     }
 }
