@@ -66,7 +66,7 @@ namespace app_main_clock {
     }
 
     // Interpretation of button inputs
-    int btnpressed(Api *app_api, uint gpio) {
+    int btnpressed(Api *app_api, uint gpio, unsigned long delta) {
         if (gpio == BUTTON_MODE)
             *ask_user_choice = true;
         return 0;

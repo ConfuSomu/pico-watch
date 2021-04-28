@@ -45,7 +45,7 @@ namespace app_home_menu {
 
     // Example of how button inputs could be interpreted.
     // Drawing on screen should be done in the render function.
-    int btnpressed(Api *app_api, uint gpio) {
+    int btnpressed(Api *app_api, uint gpio, unsigned long delta) {
         switch (gpio) {
             case BUTTON_SELECT:
                 app_switch(0, selected_app);

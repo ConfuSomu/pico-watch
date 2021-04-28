@@ -18,7 +18,7 @@ Api app_api;
 #define APP_DATA_BUFFER_LEN 256
 int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::init, app_main_clock::init};
 int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::render, app_main_clock::render};
-int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(Api *app_api, uint gpio) = {app_home_menu::btnpressed, app_main_clock::btnpressed};
+int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(Api *app_api, uint gpio, unsigned long delta) = {app_home_menu::btnpressed, app_main_clock::btnpressed};
 int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(Api *app_api, bool in_foreground) = {app_home_menu::bgrefresh, app_main_clock::bgrefresh};
 int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::destroy, app_main_clock::destroy};
 int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1};
@@ -63,8 +63,9 @@ int app_render(int app_id) {
     return (*APPS_FUNC_RENDER[app_id])(&app_api);
 }
 
-int app_btnpressed(int app_id, uint gpio) {
-    return (*APPS_FUNC_BTNPRESS[app_id])(&app_api, gpio);
+// Delta is in ms, from time_since_button_press()
+int app_btnpressed(int app_id, uint gpio, unsigned long delta) {
+    return (*APPS_FUNC_BTNPRESS[app_id])(&app_api, gpio, delta);
 }
 
 int app_destroy(int app_id) {

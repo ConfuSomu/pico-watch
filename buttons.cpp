@@ -4,20 +4,22 @@
 #include "buttons.hpp"
 #include "api.hpp"
 // From pico-watch.c:
-extern int app_btnpressed(int app_id, uint gpio);
+extern int app_btnpressed(int app_id, uint gpio, unsigned long delta);
 extern void app_switch_request(int);
 extern Api app_api;
 
 //const uint BUTTON_PINS[] = {BUTTON_HOME, BUTTON_SELECT, BUTTON_MODE, BUTTON_UP, BUTTON_DOWN};
 
 void gpio_interrupt_cb(uint gpio, uint32_t events) {
-    if (button_time_since_press() > g_s.button_delay_time) {
+    auto delta_since_press = time_since_button_press();
+
+    if (delta_since_press > g_s.button_delay_time) {
 
         if (app_api.m_interpret_button_press) {
             if (gpio == BUTTON_HOME && (g_s.current_app != 0)) // Home app
                 app_switch_request(0);
             else
-                app_btnpressed(g_s.current_app, gpio);
+                app_btnpressed(g_s.current_app, gpio, delta_since_press);
         }
 
         app_api.button_last_set(gpio);
