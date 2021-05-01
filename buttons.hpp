@@ -23,7 +23,7 @@ struct global_status {
     // See https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=301522#p1812063
     // Time is currently shared between all buttons.
     unsigned long button_last_pressed_time;
-    const int button_delay_time = 50;
+    const int button_delay_time = 125;
 };
 
 extern global_status g_s;
