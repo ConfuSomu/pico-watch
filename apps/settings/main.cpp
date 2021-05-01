@@ -10,12 +10,13 @@ extern bool rtc_get_datetime(datetime_t *t);
 #define MAIN_SET_NUM 4
 #define MAIN_SET_NUM_STR "4"
 #define SIZE_SETTING_NAME 12
-#define SET0_NAME "Time"
+#define SET0_NAME "Date & Time"
 #define SET1_NAME "Date"
 #define SET2_NAME "Brightness"
 #define SET3_NAME "Sleep delay"
-#define SET0_DESC "Current time. Choose unit to change:"
-#define SET0_0_DESC "Ajust selected unit of time."
+#define SET0_DESC "Set date/time. Choose unit to change:"
+#define SET0_0_DESC "Ajust selected unit. Use good values!"
+#define SET0_1_DESC "Set the current month or day of week."
 
 namespace app_settings {
     const char *MAIN_SET_NAMES[MAIN_SET_NUM] = {SET0_NAME, SET1_NAME, SET2_NAME, SET3_NAME};
@@ -31,15 +32,17 @@ namespace app_settings {
 
     // Set time
     void set0_menu(Api *app_api) {
-        static const char *choices[16] = {"Hour", "Minute", "Second", "Apply and close"};
+        static const char *choices[16] = {"Hour", "Minute", "Second", "Year", "Month", "Day", "Day of week", "Apply and close"};
         uint max_value;
+        uint min_value;
         uint default_value;
         datetime_t datetime;
         app_api->datetime_get(&datetime);
 
         while (true) {
-            int choice = app_api->gui_popup_strchoice(SET0_NAME, SET0_DESC, choices, 4);
+            int choice = app_api->gui_popup_strchoice(SET0_NAME, SET0_DESC, choices, 8);
 
+            min_value = 0;
             switch (choice) {
                 case 0: // Hour
                     max_value = 23;
@@ -53,18 +56,46 @@ namespace app_settings {
                     max_value = 59;
                     default_value = datetime.sec;
                     break;
-                case 3: // Apply and exit
+                case 3: // Year
+                    max_value = 4095;
+                    default_value = datetime.year;
+                    break;
+                case 5: // Day
+                    max_value = 31; // FIXME: Depends on month!
+                    min_value = 1;
+                    default_value = datetime.month;
+                    break;
+                case 7: // Apply and exit
                     app_api->datetime_set(&datetime);
                     return;
             }
 
-            int new_value = app_api->gui_popup_intchoice(choices[choice], SET0_0_DESC, 0, max_value, default_value);
+            // Display popup for editing value
+            int new_value;
+            if (choice == 4) { // Month
+                // From newlib (which already includes this array of char arrays in the complied program). This should not take more space.
+                // See newlib/libc/locale/timelocal.c (mirror @ https://github.com/bminor/newlib/blob/80cda9bbda04a1e9e3bee5eadf99061ed69ca5fb/newlib/libc/locale/timelocal.c#L40)
+                static const char *month_choice[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+                datetime.month = app_api->gui_popup_strchoice(choices[choice], SET0_1_DESC, month_choice, 12, 0, -1, datetime.month) + 1;
+
+            } else if (choice == 6) { // Day of week
+                static const char *dotw_choice[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+                datetime.dotw = app_api->gui_popup_strchoice(choices[choice], SET0_1_DESC, dotw_choice, 7, 0, -1, datetime.dotw);
+            
+            } else {
+                new_value = app_api->gui_popup_intchoice(choices[choice], SET0_0_DESC, min_value, max_value, default_value);
+            }
 
             // Store the modification in the struct
             switch (choice) {
                 case 0: datetime.hour = new_value; break;
                 case 1: datetime.min  = new_value; break;
                 case 2: datetime.sec  = new_value; break;
+                case 3: datetime.year = new_value; break;
+                // Month & date of week is stored directly after their special popup.
+                case 5: datetime.day  = new_value; break;
             }
         }
     }
