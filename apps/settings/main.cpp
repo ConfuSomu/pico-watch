@@ -38,8 +38,9 @@ namespace app_settings {
         datetime_t datetime;
         app_api->datetime_get(&datetime);
 
+        int choice = 0;
         while (true) {
-            int choice = app_api->gui_popup_strchoice(SET0_NAME, SET0_DESC, choices, 8);
+            choice = app_api->gui_popup_strchoice(SET0_NAME, SET0_DESC, choices, 8, 0, -1, choice);
 
             min_value = 0;
             switch (choice) {
