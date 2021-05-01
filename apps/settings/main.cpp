@@ -77,7 +77,7 @@ namespace app_settings {
                 // See newlib/libc/locale/timelocal.c (mirror @ https://github.com/bminor/newlib/blob/80cda9bbda04a1e9e3bee5eadf99061ed69ca5fb/newlib/libc/locale/timelocal.c#L40)
                 static const char *month_choice[12] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
-                datetime.month = app_api->gui_popup_strchoice(choices[choice], SET0_1_DESC, month_choice, 12, 0, -1, datetime.month) + 1;
+                datetime.month = app_api->gui_popup_strchoice(choices[choice], SET0_1_DESC, month_choice, 12, 0, -1, datetime.month - 1) + 1;
 
             } else if (choice == 6) { // Day of week
                 static const char *dotw_choice[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
