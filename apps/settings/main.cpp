@@ -7,19 +7,18 @@
 extern void app_switch(int old_appid, int new_appid);
 extern bool rtc_get_datetime(datetime_t *t);
 
-#define MAIN_SET_NUM 4
-#define MAIN_SET_NUM_STR "4"
+#define MAIN_SET_NUM 2
+#define MAIN_SET_NUM_STR "2"
 #define SIZE_SETTING_NAME 12
 #define SET0_NAME "Date & Time"
-#define SET1_NAME "Date"
-#define SET2_NAME "Brightness"
-#define SET3_NAME "Sleep delay"
+#define SET1_NAME "Display"
+
 #define SET0_DESC "Set date/time. Choose unit to change:"
 #define SET0_0_DESC "Ajust selected unit. Use good values!"
 #define SET0_1_DESC "Set the current month or day of week."
 
 namespace app_settings {
-    const char *MAIN_SET_NAMES[MAIN_SET_NUM] = {SET0_NAME, SET1_NAME, SET2_NAME, SET3_NAME};
+    const char *MAIN_SET_NAMES[MAIN_SET_NUM] = {SET0_NAME, SET1_NAME};
     int selected_setting = 0;
     char display_setting_name[SIZE_SETTING_NAME];
     bool selected = false;
