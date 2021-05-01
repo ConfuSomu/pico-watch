@@ -14,6 +14,8 @@ extern bool rtc_get_datetime(datetime_t *t);
 #define SET1_NAME "Date"
 #define SET2_NAME "Brightness"
 #define SET3_NAME "Sleep delay"
+#define SET0_DESC "Current time. Choose unit to change:"
+#define SET0_0_DESC "Ajust selected unit of time."
 
 namespace app_settings {
     const char *MAIN_SET_NAMES[MAIN_SET_NUM] = {SET0_NAME, SET1_NAME, SET2_NAME, SET3_NAME};
@@ -27,6 +29,46 @@ namespace app_settings {
         app_api->gui_header_text(title_str);
     }
 
+    // Set time
+    void set0_menu(Api *app_api) {
+        static const char *choices[16] = {"Hour", "Minute", "Second", "Apply and close"};
+        uint max_value;
+        uint default_value;
+        datetime_t datetime;
+        app_api->datetime_get(&datetime);
+
+        while (true) {
+            int choice = app_api->gui_popup_strchoice(SET0_NAME, SET0_DESC, choices, 4);
+
+            switch (choice) {
+                case 0: // Hour
+                    max_value = 23;
+                    default_value = datetime.hour;
+                    break;
+                case 1: // Minute
+                    max_value = 59;
+                    default_value = datetime.min;
+                    break;
+                case 2: // Second
+                    max_value = 59;
+                    default_value = datetime.sec;
+                    break;
+                case 3: // Apply and exit
+                    app_api->datetime_set(&datetime);
+                    return;
+            }
+
+            int new_value = app_api->gui_popup_intchoice(choices[choice], SET0_0_DESC, 0, max_value, default_value);
+
+            // Store the modification in the struct
+            switch (choice) {
+                case 0: datetime.hour = new_value; break;
+                case 1: datetime.min  = new_value; break;
+                case 2: datetime.sec  = new_value; break;
+            }
+        }
+    }
+
     // Rendering of app
     int render(Api *app_api) {
         show_title(app_api);
@@ -36,7 +78,7 @@ namespace app_settings {
             selected = false;
             switch (selected_setting) {
                 case 0:
-                    app_api->gui_popup_text(SET0_NAME, "Todo!");
+                    set0_menu(app_api);
                     break;
                 case 1:
                     app_api->gui_popup_text(SET1_NAME, "Todo!");
