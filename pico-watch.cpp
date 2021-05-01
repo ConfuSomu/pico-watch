@@ -10,19 +10,20 @@
 #include "buttons.hpp"
 #include "apps/main_clock.hpp"
 #include "apps/home_menu.hpp"
+#include "apps/settings/main.hpp"
 
 global_status g_s;
 Api app_api;
 
-#define NUMBER_OF_APPS 2
+#define NUMBER_OF_APPS 3
 #define APP_DATA_BUFFER_LEN 256
-int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::init, app_main_clock::init};
-int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::render, app_main_clock::render};
-int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(Api *app_api, uint gpio, unsigned long delta) = {app_home_menu::btnpressed, app_main_clock::btnpressed};
-int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(Api *app_api, bool in_foreground) = {app_home_menu::bgrefresh, app_main_clock::bgrefresh};
-int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::destroy, app_main_clock::destroy};
-int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1};
-int APPS_IS_INIT[NUMBER_OF_APPS] = {0, 0}; // Only run in background if init
+int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::init, app_main_clock::init, app_settings::init};
+int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::render, app_main_clock::render, app_settings::render};
+int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(Api *app_api, uint gpio, unsigned long delta) = {app_home_menu::btnpressed, app_main_clock::btnpressed, app_settings::btnpressed};
+int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(Api *app_api, bool in_foreground) = {app_home_menu::bgrefresh, app_main_clock::bgrefresh, app_settings::bgrefresh};
+int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::destroy, app_main_clock::destroy, app_settings::destroy};
+int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1, 1};
+int APPS_IS_INIT[NUMBER_OF_APPS] = {0}; // Only run in background if init
 
 int app_init(int app_id) {
     app_api.display_fill(0,1); // Clear OLED
