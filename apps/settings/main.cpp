@@ -10,12 +10,22 @@ extern bool rtc_get_datetime(datetime_t *t);
 #define MAIN_SET_NUM 2
 #define MAIN_SET_NUM_STR "2"
 #define SIZE_SETTING_NAME 12
+#define STR_SET_APPLY "Apply and close"
+#define STR_SET_CANCEL "Quit without saving"
 #define SET0_NAME "Date & Time"
 #define SET1_NAME "Display"
 
 #define SET0_DESC "Set date/time. Choose unit to change:"
-#define SET0_0_DESC "Ajust selected unit. Use good values!"
+#define SET0_0_DESC "Adjust selected unit. Use good values!"
 #define SET0_1_DESC "Set the current month or day of week."
+
+#define SET1_DESC "Adjust settings related to OLED display."
+#define SET1_0_DESC "Adjust display brightness."
+#define SET1_1_DESC "Time before turning off OLED and entering low power."
+#define SET1_1_MIN 5000
+// According to https://stackoverflow.com/questions/589575/what-does-the-c-standard-state-the-size-of-int-long-type-to-be :
+#define SET1_1_MAX 65500
+#define SET1_1_STEP 500
 
 namespace app_settings {
     const char *MAIN_SET_NAMES[MAIN_SET_NUM] = {SET0_NAME, SET1_NAME};
@@ -29,9 +39,9 @@ namespace app_settings {
         app_api->gui_header_text(title_str);
     }
 
-    // Set time
+    // Time and date settings
     void set0_menu(Api *app_api) {
-        static const char *choices[9] = {"Hour", "Minute", "Second", "Year", "Month", "Day", "Day of week", "Apply and close", "Quit without saving"};
+        static const char *choices[9] = {"Hour", "Minute", "Second", "Year", "Month", "Day", "Day of week", STR_SET_APPLY, STR_SET_CANCEL};
         uint max_value;
         uint min_value;
         uint default_value;
@@ -102,6 +112,28 @@ namespace app_settings {
         }
     }
 
+    // Display settings
+    void set1_menu(Api *app_api) {
+        static const char *choices[3] = {"Display brightness", "Sleep timeout", STR_SET_APPLY};
+
+        int choice = 0;
+        while (true) {
+            choice = app_api->gui_popup_strchoice(SET1_NAME, SET1_DESC, choices, 3, 0,-1,choice);
+
+            switch(choice) {
+                case 0: // Display brightness
+                    g_user.oled_contrast = app_api->gui_popup_intchoice(SET1_NAME, SET1_0_DESC, 1, 255, g_user.oled_contrast, 5);
+                    app_api->display_set_contrast(g_user.oled_contrast);
+                    break;
+                case 1: // Sleep timeout
+                    g_user.sleep_delay = app_api->gui_popup_intchoice(SET1_NAME, SET1_1_DESC, SET1_1_MIN, SET1_1_MAX, g_user.sleep_delay, SET1_1_STEP);
+                    break;
+                case 2:
+                    return;
+            }
+        }
+    }
+
     // Rendering of app
     int render(Api *app_api) {
         show_title(app_api);
@@ -114,7 +146,7 @@ namespace app_settings {
                     set0_menu(app_api);
                     break;
                 case 1:
-                    app_api->gui_popup_text(SET1_NAME, "Todo!");
+                    set1_menu(app_api);
                     break;
             }
         }
