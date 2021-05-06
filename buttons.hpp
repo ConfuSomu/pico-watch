@@ -1,6 +1,6 @@
 #ifndef __BUTTONS_H__
 #define __BUTTONS_H__
-#include <stdio.h>
+#include "init.hpp"
 
 // Init buttons used in conjuction with interrupts
 // All buttons are connected to ground.
@@ -26,7 +26,14 @@ struct global_status {
     const int button_delay_time = 125;
 };
 
+struct user_settings {
+    unsigned char oled_contrast = OLED_DEFAULT_CONTRAST;
+    // In milliseconds
+    unsigned int sleep_delay = ENTER_SLEEP_DELAY;
+};
+
 extern global_status g_s;
+extern user_settings g_user;
 
 void init_buttons();
 void gpio_interrupt_cb(uint gpio, uint32_t events);

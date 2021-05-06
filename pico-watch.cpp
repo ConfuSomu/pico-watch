@@ -13,6 +13,7 @@
 #include "apps/settings/main.hpp"
 
 global_status g_s;
+user_settings g_user;
 Api app_api;
 
 #define NUMBER_OF_APPS 3
@@ -84,11 +85,11 @@ int app_bgrefresh(int app_id) {
 bool repeating_callback(struct repeating_timer *t) {
     // Enter shallow sleep mode when needed
     auto time_since_last_press = time_since_button_press();
-    if (!g_s.is_sleeping && time_since_last_press > ENTER_SLEEP_DELAY) {
+    if (!g_s.is_sleeping && time_since_last_press > g_user.sleep_delay) {
         g_s.is_sleeping = true;
         app_api.performance_set(Api::perf_modes::ENTER_SHALLOW_SLEEP);
         app_api.display_power(false);
-    } else if (g_s.is_sleeping && time_since_last_press < ENTER_SLEEP_DELAY) {
+    } else if (g_s.is_sleeping && time_since_last_press < g_user.sleep_delay) {
         g_s.is_sleeping = false;
         app_api.performance_set(Api::perf_modes::EXIT_SHALLOW_SLEEP);
         app_api.display_power(true);
