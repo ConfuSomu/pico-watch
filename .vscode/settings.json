@@ -33,6 +33,7 @@
         "typeinfo": "cpp",
         "pico.h": "c",
         "config.h": "c",
-        "config_autogen.h": "c"
+        "config_autogen.h": "c",
+        "ctime": "cpp"
     }
 }
