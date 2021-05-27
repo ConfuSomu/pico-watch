@@ -43,7 +43,8 @@ namespace app_settings {
 
     // Time and date settings
     void set0_menu(Api *app_api) {
-        static const char *choices[9] = {"Hour", "Minute", "Second", "Year", "Month", "Day", "Day of week", STR_SET_APPLY, STR_SET_CANCEL};
+        #define NUM_CHOICES 9
+        static const char *choices[NUM_CHOICES] = {"Hour", "Minute", "Second", "Year", "Month", "Day", "Day of week", STR_SET_APPLY, STR_SET_CANCEL};
         uint max_value;
         uint min_value;
         uint default_value;
@@ -52,7 +53,7 @@ namespace app_settings {
 
         int choice = 0;
         while (true) {
-            choice = app_api->gui_popup_strchoice(SET0_NAME, SET0_DESC, choices, 9, 0, -1, choice);
+            choice = app_api->gui_popup_strchoice(SET0_NAME, SET0_DESC, choices, NUM_CHOICES, 0, -1, choice);
 
             min_value = 0;
             switch (choice) {
@@ -112,6 +113,7 @@ namespace app_settings {
                 case 5: datetime.day  = new_value; break;
             }
         }
+        #undef NUM_CHOICES
     }
 
     // Display settings
