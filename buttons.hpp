@@ -30,6 +30,9 @@ struct user_settings {
     unsigned char oled_contrast = OLED_DEFAULT_CONTRAST;
     // In milliseconds
     unsigned int sleep_delay = ENTER_SLEEP_DELAY;
+    // true: 24h, false: AM/PM
+    // TODO: Use an enum, but this would make programming the UI more complex.
+    bool time_format = true;
 };
 
 extern global_status g_s;

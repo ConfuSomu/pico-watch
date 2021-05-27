@@ -22,6 +22,8 @@ extern bool rtc_get_datetime(datetime_t *t);
 #define SET1_DESC "Adjust settings related to OLED display."
 #define SET1_0_DESC "Adjust display brightness."
 #define SET1_1_DESC "Time before turning off OLED and entering low power."
+#define SET1_2_DESC "Set display time format.\nCurrent:\nY: 24h\nN: AM/PM"
+#define SET1_2_DESC_INDEX_CURRENT 33 // Don't forget me!
 #define SET1_1_MIN 5000
 // According to https://stackoverflow.com/questions/589575/what-does-the-c-standard-state-the-size-of-int-long-type-to-be :
 #define SET1_1_MAX 65500
@@ -114,11 +116,15 @@ namespace app_settings {
 
     // Display settings
     void set1_menu(Api *app_api) {
-        static const char *choices[3] = {"Display brightness", "Sleep timeout", STR_SET_APPLY};
+        #define NUM_CHOICES 4
+        static const char *choices[NUM_CHOICES] = {"Display brightness", "Sleep timeout", "Time format", STR_SET_APPLY};
+
+        // There is no space for the "AM/PM" as this would push the last "M" on a new line, to make it nicer, a space could be afforded before the "24h" text.
+        static const char *time_format[2] = {"AM/PM", " 24h"};
 
         int choice = 0;
         while (true) {
-            choice = app_api->gui_popup_strchoice(SET1_NAME, SET1_DESC, choices, 3, 0,-1,choice);
+            choice = app_api->gui_popup_strchoice(SET1_NAME, SET1_DESC, choices, NUM_CHOICES, 0,-1,choice);
 
             switch(choice) {
                 case 0: // Display brightness
@@ -128,10 +134,15 @@ namespace app_settings {
                 case 1: // Sleep timeout
                     g_user.sleep_delay = app_api->gui_popup_intchoice(SET1_NAME, SET1_1_DESC, SET1_1_MIN, SET1_1_MAX, g_user.sleep_delay, SET1_1_STEP);
                     break;
-                case 2:
+                case 2: // Time format
+                    // TODO: Rewrite this, one day
+                    g_user.time_format = app_api->gui_popup_booleanchoice(SET1_NAME, ((std::string)SET1_2_DESC).insert(SET1_2_DESC_INDEX_CURRENT, time_format[(int)g_user.time_format]));
+                    break;
+                case 3:
                     return;
             }
         }
+        #undef NUM_CHOICES
     }
 
     // Rendering of app
