@@ -80,7 +80,6 @@ namespace app_settings {
                     break;
                 case 7: // Apply and exit
                     app_api->datetime_set(&datetime);
-                    return;
                 case 8: // Quit without saving
                     return;
             }
