@@ -76,7 +76,7 @@ namespace app_settings {
                 case 5: // Day
                     max_value = 31; // FIXME: Depends on month!
                     min_value = 1;
-                    default_value = datetime.month;
+                    default_value = datetime.day;
                     break;
                 case 7: // Apply and exit
                     app_api->datetime_set(&datetime);
