@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <vector>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "hardware/sync.h"
@@ -8,6 +9,7 @@
 #include "init.hpp"
 #include "api.hpp"
 #include "buttons.hpp"
+#include "base_app.hpp"
 #include "apps/main_clock.hpp"
 #include "apps/home_menu.hpp"
 #include "apps/settings/main.hpp"
@@ -17,14 +19,18 @@ user_settings g_user;
 Api app_api;
 
 #define NUMBER_OF_APPS 3
-#define APP_DATA_BUFFER_LEN 256
-int (*APPS_FUNC_INIT[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::init, app_main_clock::init, app_settings::init};
-int (*APPS_FUNC_RENDER[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::render, app_main_clock::render, app_settings::render};
-int (*APPS_FUNC_BTNPRESS[NUMBER_OF_APPS])(Api *app_api, uint gpio, unsigned long delta) = {app_home_menu::btnpressed, app_main_clock::btnpressed, app_settings::btnpressed};
-int (*APPS_FUNC_BGREFRESH[NUMBER_OF_APPS])(Api *app_api, bool in_foreground) = {app_home_menu::bgrefresh, app_main_clock::bgrefresh, app_settings::bgrefresh};
-int (*APPS_FUNC_DESTROY[NUMBER_OF_APPS])(Api *app_api) = {app_home_menu::destroy, app_main_clock::destroy, app_settings::destroy};
+
+std::vector<BaseApp*> open_apps;
+
 int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1, 1};
 int APPS_IS_INIT[NUMBER_OF_APPS] = {0}; // Only run in background if init
+
+int app_create(int app_id) {
+    switch (app_id) {
+        case 0: open_apps.push_back(new app_home_menu(&app_api)); break;
+        default: __breakpoint();
+    }
+}
 
 int app_init(int app_id) {
     app_api.display_fill(0,1); // Clear OLED
@@ -36,7 +42,8 @@ int app_init(int app_id) {
     }
 
     if (!APPS_IS_INIT[app_id]) {
-        int status = (*APPS_FUNC_INIT[app_id])(&app_api);
+        app_create(app_id);
+        /* int status = (*APPS_FUNC_INIT[app_id])(&app_api);
 
         switch (status) {
             case Api::app_init_return_status::MALLOC_FAILED:
@@ -55,31 +62,40 @@ int app_init(int app_id) {
             default: // OK and unhandled status codes
                 printf("App init, status: %d\n", status);
                 break;
-        }
+        } */
         APPS_IS_INIT[app_id] = 1;
     }
     return app_id;
 }
 
 int app_render(int app_id) {
-    return (*APPS_FUNC_RENDER[app_id])(&app_api);
+    for (auto app : open_apps) {
+        if (app_id == app->app_id)
+            return app->render(&app_api);
+    }
 }
 
 // Delta is in ms, from time_since_button_press()
 int app_btnpressed(int app_id, uint gpio, unsigned long delta) {
-    return (*APPS_FUNC_BTNPRESS[app_id])(&app_api, gpio, delta);
-}
-
-int app_destroy(int app_id) {
-    if (APPS_IS_INIT[app_id]) {
-        APPS_IS_INIT[app_id] = 0;
-        return (*APPS_FUNC_DESTROY[app_id])(&app_api);
+    for (auto app : open_apps) {
+        if (app_id == app->app_id)
+            return app->btnpressed(&app_api, gpio, delta);
     }
 }
 
-int app_bgrefresh(int app_id) {
-    if (APPS_IS_INIT[app_id])
-        return (*APPS_FUNC_BGREFRESH[app_id])(&app_api, app_id==g_s.current_app);
+int app_destroy(int app_id) {
+    BaseApp* to_destroy;
+
+    for (auto app : open_apps) {
+        if (app_id == app->app_id)
+            to_destroy = app;
+    }
+    delete to_destroy;
+    // FIXME: Remove app from list
+    //open_apps.erase(std::remove(open_apps.begin(), open_apps.end(), to_destroy), open_apps.end()); // See https://stackoverflow.com/a/27306171/15578170
+
+    APPS_IS_INIT[app_id] = 0;
+    return 0;
 }
 
 bool repeating_callback(struct repeating_timer *t) {
@@ -94,9 +110,11 @@ bool repeating_callback(struct repeating_timer *t) {
         app_api.performance_set(Api::perf_modes::EXIT_SHALLOW_SLEEP);
         app_api.display_power(true);
     }
-    // Refresh each app, but should it be done when sleeping?
-    for (int i=0; i < NUMBER_OF_APPS; i++) {
-        app_bgrefresh(i);
+
+    // Refresh each app
+    // should it be done when sleeping?
+    for (auto app : open_apps) {
+        app->bgrefresh(&app_api, g_s.current_app == app->app_id);
     }
     return true;
 }
