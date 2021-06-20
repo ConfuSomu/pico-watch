@@ -8,11 +8,11 @@
 extern void app_switch(int old_appid, int new_appid);
 extern bool rtc_get_datetime(datetime_t *t);
 
-#define NUMBER_OF_APPS 2
+#define NUMBER_OF_APPS 3
 #define SIZE_APP_NAME 12
 
 namespace app_home_menu {
-    const char *APPS_NAME[NUMBER_OF_APPS] = {"Home", "Clock"};
+    const char *APPS_NAME[NUMBER_OF_APPS] = {"Home", "Clock", "Settings"};
     int selected_app = 0;
     char display_app_name[SIZE_APP_NAME];
 

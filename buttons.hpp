@@ -1,6 +1,6 @@
 #ifndef __BUTTONS_H__
 #define __BUTTONS_H__
-#include <stdio.h>
+#include "init.hpp"
 
 // Init buttons used in conjuction with interrupts
 // All buttons are connected to ground.
@@ -23,10 +23,20 @@ struct global_status {
     // See https://www.raspberrypi.org/forums/viewtopic.php?f=145&t=301522#p1812063
     // Time is currently shared between all buttons.
     unsigned long button_last_pressed_time;
-    const int button_delay_time = 50;
+    const int button_delay_time = 125;
+};
+
+struct user_settings {
+    unsigned char oled_contrast = OLED_DEFAULT_CONTRAST;
+    // In milliseconds
+    unsigned int sleep_delay = ENTER_SLEEP_DELAY;
+    // true: 24h, false: AM/PM
+    // TODO: Use an enum, but this would make programming the UI more complex.
+    bool time_format = true;
 };
 
 extern global_status g_s;
+extern user_settings g_user;
 
 void init_buttons();
 void gpio_interrupt_cb(uint gpio, uint32_t events);

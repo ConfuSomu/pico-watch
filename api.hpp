@@ -39,6 +39,9 @@ class Api {
         void init();
         // Control the display's power (on or off)
         void display_power(bool mode);
+        // Set the display's contrast.
+        // \param contrast Between 0 and 255
+        void display_set_contrast(unsigned char contrast);
         int display_write_string(int iScrollX, int x, int y, const char *szMsg, int iSize, int bInvert, int bRender);
         void display_fill(unsigned char ucData, int bRender);
         void display_draw_line(int x1, int y1, int x2, int y2, int bRender);

@@ -50,6 +50,8 @@ add_executable(pico-watch
         apps/home_menu.hpp
         apps/main_clock.cpp
         apps/main_clock.hpp
+        apps/settings/main.cpp
+        apps/settings/main.hpp
 	)
 
 pico_set_program_name(pico-watch "pico-watch")

@@ -18,13 +18,17 @@ void Api::init_display() {
     sleep_ms(500); // Wait for the OLED to settle
     oledInit(&m_oled, OLED_128x64, 0x3d, 0, 0, 1, SDA_PIN, SCL_PIN, RESET_PIN, 1000000L);
     oledFill(&m_oled, 0,1);
-    oledSetContrast(&m_oled, OLED_DEFAULT_CONTRAST);
+    oledSetContrast(&m_oled, g_user.oled_contrast);
     oledSetBackBuffer(&m_oled, m_ucBuffer); // Seems to be required to draw lines, rectangles…
     //oledSetTextWrap(&oled, true);
 }
 
 void Api::display_power(bool mode) {
     oledPower(&m_oled, mode);
+}
+
+void Api::display_set_contrast(unsigned char contrast) {
+    oledSetContrast(&m_oled, contrast);
 }
 
 int Api::display_write_string(int iScrollX, int x, int y, const char *szMsg, int iSize, int bInvert, int bRender) {
@@ -41,7 +45,7 @@ void Api::display_draw_line(int x1, int y1, int x2, int y2, int bRender) {
     m_writebb_needed = true;
 }
 
-void Api::display_draw_rectange(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled) {
+void Api::display_draw_rectange(int x1, int y1, int x2, int y2, uint8_t ucColor, uint8_t bFilled) { // FIXME: Fix typo
     oledRectangle(&m_oled, x1, y1, x2, y2, ucColor, bFilled);
     m_writebb_needed = true; // Write the back buffer, after experimentation, seems to be required when drawing this shape
 }
