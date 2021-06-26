@@ -40,6 +40,7 @@ target_link_libraries(Oled pico_stdlib hardware_i2c)
 # Main code
 add_executable(pico-watch
 	pico-watch.cpp
+        app_manager.cpp
         init.cpp
         init.hpp
         buttons.cpp

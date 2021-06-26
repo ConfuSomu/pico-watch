@@ -3,9 +3,8 @@
 
 #include "buttons.hpp"
 #include "api.hpp"
+#include "app_manager.hpp"
 // From pico-watch.c:
-extern int app_btnpressed(int app_id, uint gpio, unsigned long delta);
-extern void app_switch_request(int);
 extern Api app_api;
 
 //const uint BUTTON_PINS[] = {BUTTON_HOME, BUTTON_SELECT, BUTTON_MODE, BUTTON_UP, BUTTON_DOWN};

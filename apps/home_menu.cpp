@@ -40,7 +40,7 @@ int app_home_menu::render(Api *app_api) {
 int app_home_menu::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
     switch (gpio) {
         case BUTTON_SELECT:
-            app_switch(0, selected_app);
+            app_switch(0, selected_app); // FIXME: Should call app_switch_request instead
             return 0;
         case BUTTON_DOWN:
             selected_app--;
