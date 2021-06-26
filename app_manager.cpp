@@ -77,13 +77,17 @@ int app_btnpressed(int app_id, uint gpio, unsigned long delta) {
 int app_destroy(int app_id) {
     BaseApp* to_destroy;
 
+    // FIXME: Does not work if the app is not open. An invalid item tries to get freed.
+    int to_delete_id = 0;
     for (auto app : open_apps) {
-        if (app_id == app->app_id)
+        if (app_id == app->app_id) {
             to_destroy = app;
+            break;
+        }
+        to_delete_id++;
     }
     delete to_destroy;
-    // FIXME: Remove app from list
-    //open_apps.erase(std::remove(open_apps.begin(), open_apps.end(), to_destroy), open_apps.end()); // See https://stackoverflow.com/a/27306171/15578170
+    open_apps.erase(open_apps.begin() + to_delete_id);
 
     APPS_IS_INIT[app_id] = 0;
     return 0;
