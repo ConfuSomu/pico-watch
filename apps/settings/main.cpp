@@ -3,6 +3,7 @@
 
 #include "main.hpp"
 #include "../../api.hpp"
+#include "../../globals.hpp"
 
 extern void app_switch(int old_appid, int new_appid);
 extern bool rtc_get_datetime(datetime_t *t);

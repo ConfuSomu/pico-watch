@@ -6,6 +6,7 @@ extern "C" {
 
 #include "api.hpp"
 #include "init.hpp"
+#include "globals.hpp"
 
 void Api::init() {
     if (!m_init_done) {

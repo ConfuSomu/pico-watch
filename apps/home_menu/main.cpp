@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
-#include "home_menu.hpp"
-#include "../api.hpp"
-#include "../buttons.hpp"
+#include "../../globals.hpp"
+#include "../../app_manager.hpp"
+#include "main.hpp"
 
-extern void app_switch(int old_appid, int new_appid);
 extern bool rtc_get_datetime(datetime_t *t);
 
 void app_home_menu::title_str(char *buf, uint buf_size, const datetime_t *t) {
@@ -40,7 +39,7 @@ int app_home_menu::render(Api *app_api) {
 int app_home_menu::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
     switch (gpio) {
         case BUTTON_SELECT:
-            app_switch(0, selected_app); // FIXME: Should call app_switch_request instead
+            app_switch_request( selected_app);
             return 0;
         case BUTTON_DOWN:
             selected_app--;

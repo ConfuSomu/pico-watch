@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 
 #include "buttons.hpp"
+#include "globals.hpp"
 #include "api.hpp"
 #include "app_manager.hpp"
 // From pico-watch.c:
@@ -15,7 +16,7 @@ void gpio_interrupt_cb(uint gpio, uint32_t events) {
     if (delta_since_press > g_s.button_delay_time) {
 
         if (app_api.m_interpret_button_press) {
-            if (gpio == BUTTON_HOME && (g_s.current_app != 0)) // Home app
+            if (gpio == BUTTON_HOME && (g_s.current_app->app_id != 0)) // Home app
                 app_switch_request(0);
             else
                 app_btnpressed(g_s.current_app, gpio, delta_since_press);

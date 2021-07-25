@@ -1,5 +1,4 @@
-#ifndef __API_H__
-#define __API_H__
+#pragma once
 
 #include <iostream>
 #include "pico/util/datetime.h"
@@ -125,5 +124,3 @@ class Api {
         // Set last button pressed, should only be called by button gpio interrupt.
         void button_last_set(uint gpio);
 };
-
-#endif

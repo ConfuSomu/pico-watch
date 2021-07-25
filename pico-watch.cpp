@@ -8,6 +8,7 @@
 #include "init.hpp"
 #include "api.hpp"
 #include "buttons.hpp"
+#include "globals.hpp"
 #include "app_manager.hpp"
 
 global_status g_s;
@@ -30,7 +31,7 @@ bool repeating_callback(struct repeating_timer *t) {
     // Refresh each app
     // should it be done when sleeping?
     for (auto app : open_apps) {
-        app->bgrefresh(&app_api, g_s.current_app == app->app_id);
+        app->bgrefresh(&app_api, true); // FIXME: second arg
     }
     return true;
 }
@@ -43,7 +44,7 @@ int main() {
     struct repeating_timer timer;
     add_repeating_timer_ms(250, repeating_callback, NULL, &timer); // TODO: Execute on core1
 
-    app_init(g_s.current_app);
+    g_s.current_app = app_init(0);
 
     while (1) {
         if (g_s.app_switch_requested) {
