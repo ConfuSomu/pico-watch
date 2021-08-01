@@ -3,16 +3,17 @@
 #include "app_manager.hpp"
 #include "api.hpp"
 #include "globals.hpp"
+
+// App classes following:
 #include "apps/main_clock/main.hpp"
 #include "apps/home_menu/main.hpp"
 #include "apps/settings/main.hpp"
-
 #define NUMBER_OF_APPS 3
+
 // From pico-watch.c:
 extern Api app_api;
 
 std::vector<BaseApp*> open_apps;
-int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1, 1};
 
 // Check if the specified app (via app_id) is already running.
 // \return If app is init, pointer to app, else nullptr (more or less 0).
@@ -39,7 +40,6 @@ BaseApp* app_create(int app_id) {
 
 BaseApp* app_init(int app_id) {
     BaseApp* new_app;
-    app_api.display_fill(0,1); // Clear OLED
     app_api.performance_render_interval_set(500); // Reset interval
 
     if (app_id > NUMBER_OF_APPS-1 or app_id < 0) {
@@ -91,6 +91,8 @@ void app_switch_request(int to_appid) {
 
 void app_switch(BaseApp* app, int new_appid) {
     g_s.app_ready = false;
+    app_api.display_fill(0,1); // Clear OLED
+
     if (app->app_get_attributes().destroy_on_exit)
         app_destroy(app);
 
