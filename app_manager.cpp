@@ -29,6 +29,7 @@ BaseApp* app_create(int app_id) {
     switch (app_id) {
         case 0: open_apps.push_back(new app_home_menu(&app_api)); break;
         case 1: open_apps.push_back(new app_main_clock(&app_api)); break;
+        case 2: open_apps.push_back(new app_settings(&app_api)); break;
         default: __breakpoint(); return open_apps.front(); // Should be home_menu
     }
     // TODO: Check when new fails
