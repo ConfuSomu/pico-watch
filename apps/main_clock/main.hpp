@@ -14,10 +14,12 @@ class app_main_clock : public BaseApp {
         void time_as_str(char *buf, uint buf_size, const datetime_t *t);
         void date_as_str(char *buf, uint buf_size, const datetime_t *t);
         void show_datetime(Api *app_api);
-    
+
+        AppAttributes app_attributes = {1, true};
     public:
-        uint app_id = 1;
-        bool app_destroy_on_exit = true;
+        const AppAttributes& app_get_attributes() {
+            return app_attributes;
+        }
 
         app_main_clock(Api *app_api);
         int render(Api *app_api);
@@ -25,12 +27,3 @@ class app_main_clock : public BaseApp {
         int bgrefresh(Api *app_api, bool in_foreground);
         ~app_main_clock();
 };
-
-
-/* namespace app_main_clock {
-    int init(Api *app_api);
-    int render(Api *app_api);
-    int btnpressed(Api *app_api, uint gpio, unsigned long delta);
-    int bgrefresh(Api *app_api, bool in_foreground);
-    int destroy(Api *app_api);
-} */

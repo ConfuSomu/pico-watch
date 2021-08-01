@@ -16,9 +16,12 @@ class app_home_menu : public BaseApp {
 
         void title_str(char *buf, uint buf_size, const datetime_t *t);
         void show_title(Api *app_api);
+
+        AppAttributes app_attributes = {0, false};
     public:
-        uint app_id = 0;
-        bool app_destroy_on_exit = false;
+        const AppAttributes& app_get_attributes() {
+            return app_attributes;
+        }
         
         app_home_menu(Api *app_api);
         int render(Api *app_api);

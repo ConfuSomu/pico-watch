@@ -18,7 +18,7 @@ int APPS_DESTROY_ON_EXIT[NUMBER_OF_APPS] = {0, 1, 1};
 // \return If app is init, pointer to app, else nullptr (more or less 0).
 BaseApp* app_check_if_init(int app_id) {
     for (auto app : open_apps) {
-        if (app_id == app->app_id)
+        if (app_id == app->app_get_attributes().id)
             return app;
     }
     return nullptr;
@@ -88,7 +88,7 @@ void app_switch_request(int to_appid) {
 
 void app_switch(BaseApp* app, int new_appid) {
     g_s.app_ready = false;
-    if (app->app_destroy_on_exit)
+    if (app->app_get_attributes().destroy_on_exit)
         app_destroy(app);
 
     auto app_ptr = app_check_if_init(new_appid);
