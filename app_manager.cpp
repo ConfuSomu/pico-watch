@@ -36,7 +36,6 @@ BaseApp* app_create(int app_id) {
     return open_apps.back();
 }
 
-// Init a new app, that is not running.
 BaseApp* app_init(int app_id) {
     BaseApp* new_app;
     app_api.display_fill(0,1); // Clear OLED
@@ -56,12 +55,10 @@ BaseApp* app_init(int app_id) {
     return new_app;
 }
 
-// Allow the running app, referenced by app_id, to invoke its render routine.
 int app_render(BaseApp* app) {
     return app->render(&app_api);
 }
 
-// Delta is in ms, from time_since_button_press()
 int app_btnpressed(BaseApp* app, uint gpio, unsigned long delta) {
     return app->btnpressed(&app_api, gpio, delta);
 }
@@ -78,14 +75,12 @@ int app_destroy(BaseApp* to_erase) {
     return 0;
 }
 
-// Refresh each app
 void app_all_bgrefresh() {
     for (auto app : open_apps) {
         app->bgrefresh(&app_api, app->app_get_attributes().id == g_s.current_app->app_get_attributes().id);
     }
 }
 
-// Requests the current app to be replaced by an other one. The replacement will be done at the right moment.
 void app_switch_request(int to_appid) {
     if (!g_s.app_switch_requested)
         g_s.app_switch_to_app = to_appid;
