@@ -28,11 +28,9 @@ bool repeating_callback(struct repeating_timer *t) {
         app_api.display_power(true);
     }
 
-    // Refresh each app
     // should it be done when sleeping?
-    for (auto app : open_apps) {
-        app->bgrefresh(&app_api, true); // FIXME: second arg
-    }
+    app_all_bgrefresh();
+    
     return true;
 }
 

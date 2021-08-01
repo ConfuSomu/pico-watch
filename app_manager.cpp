@@ -78,6 +78,13 @@ int app_destroy(BaseApp* to_erase) {
     return 0;
 }
 
+// Refresh each app
+void app_all_bgrefresh() {
+    for (auto app : open_apps) {
+        app->bgrefresh(&app_api, app->app_get_attributes().id == g_s.current_app->app_get_attributes().id);
+    }
+}
+
 // Requests the current app to be replaced by an other one. The replacement will be done at the right moment.
 void app_switch_request(int to_appid) {
     if (!g_s.app_switch_requested)
