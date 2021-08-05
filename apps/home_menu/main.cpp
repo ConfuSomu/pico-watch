@@ -39,7 +39,7 @@ int app_home_menu::render(Api *app_api) {
 int app_home_menu::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
     switch (gpio) {
         case BUTTON_SELECT:
-            app_switch_request( selected_app);
+            app_mgr::app_switch_request(selected_app);
             return 0;
         case BUTTON_DOWN:
             selected_app--;

@@ -29,7 +29,7 @@ bool repeating_callback(struct repeating_timer *t) {
     }
 
     // should it be done when sleeping?
-    app_all_bgrefresh();
+    app_mgr::app_all_bgrefresh();
     
     return true;
 }
@@ -42,16 +42,16 @@ int main() {
     struct repeating_timer timer;
     add_repeating_timer_ms(250, repeating_callback, NULL, &timer); // TODO: Execute on core1
 
-    g_s.current_app = app_init(0);
+    g_s.current_app = app_mgr::app_init(0);
 
     while (1) {
         if (g_s.app_switch_requested) {
-            app_switch(g_s.current_app, g_s.app_switch_to_app);
+            app_mgr::app_switch(g_s.current_app, g_s.app_switch_to_app);
             g_s.app_switch_requested = false;
         }
         
         if (g_s.app_ready && !g_s.is_sleeping) {
-            app_render(g_s.current_app);
+            app_mgr::app_render(g_s.current_app);
             app_api.display_write_backbuffer();
         }
         

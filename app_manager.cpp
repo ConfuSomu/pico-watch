@@ -13,11 +13,9 @@
 // From pico-watch.c:
 extern Api app_api;
 
-std::vector<BaseApp*> open_apps;
+std::vector<BaseApp*> app_mgr::open_apps;
 
-// Check if the specified app (via app_id) is already running.
-// \return If app is init, pointer to app, else nullptr (more or less 0).
-BaseApp* app_check_if_init(int app_id) {
+BaseApp* app_mgr::app_check_if_init(int app_id) {
     for (auto app : open_apps) {
         if (app_id == app->app_get_attributes().id)
             return app;
@@ -25,8 +23,7 @@ BaseApp* app_check_if_init(int app_id) {
     return nullptr;
 }
 
-// Called by app_init to create the app object.
-BaseApp* app_create(int app_id) {
+BaseApp* app_mgr::app_create(int app_id) {
     switch (app_id) {
         case 0: open_apps.push_back(new app_home_menu(&app_api)); break;
         case 1: open_apps.push_back(new app_main_clock(&app_api)); break;
@@ -38,7 +35,7 @@ BaseApp* app_create(int app_id) {
     return open_apps.back();
 }
 
-BaseApp* app_init(int app_id) {
+BaseApp* app_mgr::app_init(int app_id) {
     BaseApp* new_app;
     app_api.performance_render_interval_set(500); // Reset interval
 
@@ -56,16 +53,15 @@ BaseApp* app_init(int app_id) {
     return new_app;
 }
 
-int app_render(BaseApp* app) {
+int app_mgr::app_render(BaseApp* app) {
     return app->render(&app_api);
 }
 
-int app_btnpressed(BaseApp* app, uint gpio, unsigned long delta) {
+int app_mgr::app_btnpressed(BaseApp* app, uint gpio, unsigned long delta) {
     return app->btnpressed(&app_api, gpio, delta);
 }
 
-// Quit the app referenced by the app_id.
-int app_destroy(BaseApp* to_erase) {
+int app_mgr::app_destroy(BaseApp* to_erase) {
     auto erase_it = std::find(open_apps.begin(), open_apps.end(), to_erase); // "it" meaning iterator
     if (erase_it != open_apps.end()) {
         //assert(to_erase == erase_it);
@@ -76,20 +72,20 @@ int app_destroy(BaseApp* to_erase) {
     return 0;
 }
 
-void app_all_bgrefresh() {
+void app_mgr::app_all_bgrefresh() {
     for (auto app : open_apps) {
         app->bgrefresh(&app_api, app->app_get_attributes().id == g_s.current_app->app_get_attributes().id);
     }
 }
 
-void app_switch_request(int to_appid) {
+void app_mgr::app_switch_request(int to_appid) {
     if (!g_s.app_switch_requested)
         g_s.app_switch_to_app = to_appid;
     g_s.app_switch_requested = true;
     app_api.performance_render_interval_set(0); // This will be reset on new app init
 }
 
-void app_switch(BaseApp* app, int new_appid) {
+void app_mgr::app_switch(BaseApp* app, int new_appid) {
     g_s.app_ready = false;
     app_api.display_fill(0,1); // Clear OLED
 

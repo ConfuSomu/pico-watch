@@ -17,9 +17,9 @@ void gpio_interrupt_cb(uint gpio, uint32_t events) {
 
         if (app_api.m_interpret_button_press) {
             if (gpio == BUTTON_HOME && (g_s.current_app->app_get_attributes().id != 0)) // Home app
-                app_switch_request(0);
+                app_mgr::app_switch_request(0);
             else
-                app_btnpressed(g_s.current_app, gpio, delta_since_press);
+                app_mgr::app_btnpressed(g_s.current_app, gpio, delta_since_press);
         }
 
         app_api.button_last_set(gpio);
