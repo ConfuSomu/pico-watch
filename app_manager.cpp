@@ -24,13 +24,21 @@ BaseApp* app_mgr::app_check_if_init(int app_id) {
 }
 
 BaseApp* app_mgr::app_create(int app_id) {
+    BaseApp* new_app;
+
     switch (app_id) {
-        case 0: open_apps.push_back(new app_home_menu(&app_api)); break;
-        case 1: open_apps.push_back(new app_main_clock(&app_api)); break;
-        case 2: open_apps.push_back(new app_settings(&app_api)); break;
+        case 0: new_app = new app_home_menu(&app_api); break;
+        case 1: new_app = new app_main_clock(&app_api); break;
+        case 2: new_app = new app_settings(&app_api); break;
         default: __breakpoint(); return open_apps.front(); // Should be home_menu
     }
-    // TODO: Check when new fails
+
+    if (new_app != nullptr)
+        open_apps.push_back(new_app);
+    else {
+        printf("new failed for app %d. Not enough memory?", app_id);
+        return open_apps.front(); // Should be home_menu
+    }
 
     return open_apps.back();
 }
