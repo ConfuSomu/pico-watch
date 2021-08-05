@@ -2,7 +2,7 @@
 #include "base_app.hpp"
 
 struct global_status {
-    BaseApp* current_app = 0;
+    BaseApp* foreground_app = 0;
     bool is_sleeping = false;
     bool app_ready = true;
     bool app_switch_requested = false;

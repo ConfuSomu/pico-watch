@@ -74,7 +74,7 @@ int app_mgr::app_destroy(BaseApp* to_erase) {
 
 void app_mgr::app_all_bgrefresh() {
     for (auto app : open_apps) {
-        app->bgrefresh(&app_api, app->app_get_attributes().id == g_s.current_app->app_get_attributes().id);
+        app->bgrefresh(&app_api, app->app_get_attributes().id == g_s.foreground_app->app_get_attributes().id);
     }
 }
 
@@ -94,9 +94,9 @@ void app_mgr::app_switch(BaseApp* app, int new_appid) {
 
     auto app_ptr = app_check_if_init(new_appid);
     if (app_ptr)
-        g_s.current_app = app_ptr;
+        g_s.foreground_app = app_ptr;
     else
-        g_s.current_app = app_init(new_appid);
+        g_s.foreground_app = app_init(new_appid);
     
     g_s.app_ready = true;
 }
