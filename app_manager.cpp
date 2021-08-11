@@ -52,6 +52,8 @@ BaseApp* app_mgr::app_init(int app_id) {
         return app_init(0);
     }
 
+    // Check if the app is already running.
+    // Should this be done instead in app_mgr::app_switch() ?
     auto app_ptr = app_check_if_init(app_id);
     if (app_ptr)
         new_app = app_ptr;
@@ -100,11 +102,6 @@ void app_mgr::app_switch(BaseApp* app, int new_appid) {
     if (app->app_get_attributes().destroy_on_exit)
         app_destroy(app);
 
-    auto app_ptr = app_check_if_init(new_appid);
-    if (app_ptr)
-        g_s.foreground_app = app_ptr;
-    else
-        g_s.foreground_app = app_init(new_appid);
-    
+    g_s.foreground_app = app_init(new_appid);    
     g_s.app_ready = true;
 }
