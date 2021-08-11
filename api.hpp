@@ -22,12 +22,8 @@ class Api {
         void gui_popup_intchoice_footer(int current_num, int min_num, int max_num);
         void gui_popup_strchoice_footer(const char selection[]);
     public:
-        // Allow button press to be registed by app and for app_switch (when HOME). Set to false for in Api internal gui.
+        // Allow button press to be registed by app and for app_switch (when HOME). Set to false when displaying Api's internal GUI.
         bool m_interpret_button_press = true;
-        enum app_init_return_status {
-            OK = 0,
-            MALLOC_FAILED = 1
-        };
         enum perf_modes {
             LOW_POWER,
             NORMAL_PERF,

@@ -20,9 +20,9 @@ class app_settings : public BaseApp {
         }
 
         app_settings(Api *app_api);
-        int render(Api *app_api);
-        int btnpressed(Api *app_api, uint gpio, unsigned long delta);
-        int bgrefresh(Api *app_api, bool in_foreground);
+        AppReturnValues render(Api *app_api);
+        AppReturnValues btnpressed(Api *app_api, uint gpio, unsigned long delta);
+        AppReturnValues bgrefresh(Api *app_api, bool in_foreground);
         ~app_settings();
 };
 #include "strings-undef.hpp"

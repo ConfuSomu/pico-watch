@@ -52,7 +52,7 @@ void app_main_clock::show_datetime(Api *app_api) {
 }
 
 // Rendering of the app
-int app_main_clock::render(Api *app_api) {
+BaseApp::AppReturnValues app_main_clock::render(Api *app_api) {
     app_api->gui_header_text("Test clock", 17);
     show_datetime(app_api);
     if (*ask_user_choice) {
@@ -60,14 +60,20 @@ int app_main_clock::render(Api *app_api) {
         *ask_user_choice = false;
     }
     app_api->gui_footer_text(choices[*user_choice],0,1);
-    return 0;
+
+    if (*user_choice == 1)
+        return AppReturnValues::CLOSE;
+    else if (*user_choice == 2)
+        return AppReturnValues::QUIT;
+
+    return AppReturnValues::OK;
 }
 
 // Interpretation of button inputs
-int app_main_clock::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
+BaseApp::AppReturnValues app_main_clock::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
     if (gpio == BUTTON_MODE)
         *ask_user_choice = true;
-    return 0;
+    return AppReturnValues::OK;
 }
 
 // Initlisation of the app.
@@ -82,8 +88,12 @@ app_main_clock::app_main_clock(Api *app_api) {
 }
 
 // Processor intensive operations and functions related to drawing to the screen should only be done when the app is in_foreground(=1). This function is only called when the app is init.
-int app_main_clock::bgrefresh(Api *app_api, bool in_foreground) {
-    return 1;
+BaseApp::AppReturnValues app_main_clock::bgrefresh(Api *app_api, bool in_foreground) {
+    if (*user_choice == 3)
+        return AppReturnValues::CLOSE;
+    else if (*user_choice == 4)
+        return AppReturnValues::QUIT;
+    return AppReturnValues::OK;
 }
 
 // Destruction of app, deinitlisation should be done here. This is only called if the app's APPS_DESTROY_ON_EXIT is set to 1. When it is not a "service" app.

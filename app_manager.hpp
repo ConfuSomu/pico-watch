@@ -11,10 +11,10 @@ namespace app_mgr {
     BaseApp* app_init(int app_id);
 
     // Allow the running app, referenced by app_id, to invoke its render routine.
-    int app_render(BaseApp* app);
+    void app_render(BaseApp* app);
 
     // Delta is in ms, from time_since_button_press()
-    int app_btnpressed(BaseApp* app, uint gpio, unsigned long delta);
+    void app_btnpressed(BaseApp* app, uint gpio, unsigned long delta);
 
     // This should only be called by pico-watch.cpp before app rendering, to chage the current app.
     void app_switch(BaseApp* app, int new_appid);
@@ -26,13 +26,17 @@ namespace app_mgr {
     void app_all_bgrefresh();
 
     // Private functions following. I tried using anonymous namespaces but it was too complicated. I might come back to this later. Just don't use the following internal functions.
+
     // Check if the specified app (via app_id) is already running.
     // \return If app is init, pointer to app, else nullptr (more or less 0).
     BaseApp* app_check_if_init(int app_id);
+
+    // Check the return value of the called application method and act on it.
+    void app_act_on_return_value(BaseApp* app, BaseApp::AppReturnValues return_value);
 
     // Called by app_init to create the app object.
     BaseApp* app_create(int app_id);
 
     // Quit the app referenced by the app_id.
-    int app_destroy(BaseApp* to_erase);
+    void app_destroy(BaseApp* to_erase);
 }

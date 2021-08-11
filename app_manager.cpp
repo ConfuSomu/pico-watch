@@ -23,6 +23,25 @@ BaseApp* app_mgr::app_check_if_init(int app_id) {
     return nullptr;
 }
 
+void app_mgr::app_act_on_return_value(BaseApp* app, BaseApp::AppReturnValues return_value) {
+    switch (return_value) {
+        case BaseApp::AppReturnValues::OK:
+            break;
+        
+        case BaseApp::AppReturnValues::CLOSE:
+            g_s.foreground_app = open_apps.front(); // The app has to be in foreground as the current function is called by app_render and app_btnpress
+            break;
+
+        case BaseApp::AppReturnValues::QUIT:
+            app_destroy(app);
+            g_s.foreground_app = open_apps.front();
+            break;
+
+        default:
+            printf("Unidentified return value %d for app %d at %x", return_value, app->app_get_attributes().id, app);
+    }
+}
+
 BaseApp* app_mgr::app_create(int app_id) {
     BaseApp* new_app;
 
@@ -63,28 +82,53 @@ BaseApp* app_mgr::app_init(int app_id) {
     return new_app;
 }
 
-int app_mgr::app_render(BaseApp* app) {
-    return app->render(&app_api);
+void app_mgr::app_render(BaseApp* app) {
+    app_act_on_return_value(app, app->render(&app_api));
 }
 
-int app_mgr::app_btnpressed(BaseApp* app, uint gpio, unsigned long delta) {
-    return app->btnpressed(&app_api, gpio, delta);
+void app_mgr::app_btnpressed(BaseApp* app, uint gpio, unsigned long delta) {
+    app_act_on_return_value(app, app->btnpressed(&app_api, gpio, delta));
 }
 
-int app_mgr::app_destroy(BaseApp* to_erase) {
+void app_mgr::app_destroy(BaseApp* to_erase) {
     auto erase_it = std::find(open_apps.begin(), open_apps.end(), to_erase); // "it" meaning iterator
     if (erase_it != open_apps.end()) {
         //assert(to_erase == erase_it);
         delete to_erase;
         open_apps.erase(erase_it);
     }
-
-    return 0;
 }
 
 void app_mgr::app_all_bgrefresh() {
+    std::vector<BaseApp*> to_erase;
+    bool do_erase = false;
+
     for (auto app : open_apps) {
-        app->bgrefresh(&app_api, app->app_get_attributes().id == g_s.foreground_app->app_get_attributes().id);
+        bool is_foreground = app->app_get_attributes().id == g_s.foreground_app->app_get_attributes().id;
+
+        switch (app->bgrefresh(&app_api, is_foreground)) {
+            case BaseApp::AppReturnValues::OK:
+                break;
+            
+            case BaseApp::AppReturnValues::QUIT:
+                do_erase = true;
+                to_erase.push_back(app);
+                // No break here!
+            
+            case BaseApp::AppReturnValues::CLOSE:
+                if (is_foreground)
+                    g_s.foreground_app = open_apps.front();
+                break;
+            
+            default:
+                printf("Unidentified return value in bgrefresh for app %d at %x", app->app_get_attributes().id, app);
+        }
+    }
+
+    if (do_erase) {
+        for (auto app : to_erase) {
+            app_destroy(app);
+        }
     }
 }
 

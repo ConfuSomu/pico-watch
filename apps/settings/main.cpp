@@ -119,7 +119,7 @@ void app_settings::set1_menu(Api *app_api) {
 }
 
 // Rendering of app
-int app_settings::render(Api *app_api) {
+BaseApp::AppReturnValues app_settings::render(Api *app_api) {
     show_title(app_api);
     app_api->display_write_string(0,0,3, display_setting_name, FONT_12x16, 0, 1);
 
@@ -135,10 +135,10 @@ int app_settings::render(Api *app_api) {
         }
     }
 
-    return 0;
+    return AppReturnValues::OK;
 }
 
-int app_settings::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
+BaseApp::AppReturnValues app_settings::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
     switch (gpio) {
         case BUTTON_SELECT:
             selected = true;
@@ -157,7 +157,7 @@ int app_settings::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
     }
     // Add spaces to avoid "ghost" characters from app names displayed before
     snprintf(display_setting_name, SIZE_SETTING_NAME, "%s             ", MAIN_SET_NAMES[selected_setting]);
-    return 0;
+    return AppReturnValues::OK;
 }
 
 app_settings::app_settings(Api *app_api) {
@@ -168,8 +168,8 @@ app_settings::app_settings(Api *app_api) {
     snprintf(display_setting_name, SIZE_SETTING_NAME, "%s", MAIN_SET_NAMES[0]);
 }
 
-int app_settings::bgrefresh(Api *app_api, bool in_foreground) {
-    return 1;
+BaseApp::AppReturnValues app_settings::bgrefresh(Api *app_api, bool in_foreground) {
+    return AppReturnValues::OK;
 }
 
 app_settings::~app_settings() {
