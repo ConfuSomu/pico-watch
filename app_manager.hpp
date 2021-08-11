@@ -34,6 +34,9 @@ namespace app_mgr {
     // Check the return value of the called application method and act on it.
     void app_act_on_return_value(BaseApp* app, BaseApp::AppReturnValues return_value);
 
+    // Unconditionally set the new foreground app
+    void new_foreground_app(BaseApp* app);
+
     // Called by app_init to create the app object.
     BaseApp* app_create(int app_id);
 

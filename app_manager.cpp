@@ -23,18 +23,22 @@ BaseApp* app_mgr::app_check_if_init(int app_id) {
     return nullptr;
 }
 
+void app_mgr::new_foreground_app(BaseApp* app) {
+    app_api.display_fill(0,1); // Clear OLED
+    g_s.foreground_app = app;
+}
+
 void app_mgr::app_act_on_return_value(BaseApp* app, BaseApp::AppReturnValues return_value) {
     switch (return_value) {
         case BaseApp::AppReturnValues::OK:
             break;
-        
-        case BaseApp::AppReturnValues::CLOSE:
-            g_s.foreground_app = open_apps.front(); // The app has to be in foreground as the current function is called by app_render and app_btnpress
-            break;
 
         case BaseApp::AppReturnValues::QUIT:
             app_destroy(app);
-            g_s.foreground_app = open_apps.front();
+            // No break
+        
+        case BaseApp::AppReturnValues::CLOSE:
+            new_foreground_app(open_apps.front()); // The app has to be in foreground as the current function is called by app_render and app_btnpress
             break;
 
         default:
@@ -117,7 +121,7 @@ void app_mgr::app_all_bgrefresh() {
             
             case BaseApp::AppReturnValues::CLOSE:
                 if (is_foreground)
-                    g_s.foreground_app = open_apps.front();
+                    new_foreground_app(open_apps.front());
                 break;
             
             default:
@@ -141,11 +145,10 @@ void app_mgr::app_switch_request(int to_appid) {
 
 void app_mgr::app_switch(BaseApp* app, int new_appid) {
     g_s.app_ready = false;
-    app_api.display_fill(0,1); // Clear OLED
 
     if (app->app_get_attributes().destroy_on_exit)
         app_destroy(app);
 
-    g_s.foreground_app = app_init(new_appid);    
+    new_foreground_app(app_init(new_appid));    
     g_s.app_ready = true;
 }
