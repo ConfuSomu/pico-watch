@@ -7,6 +7,7 @@ class BaseApp {
         struct AppAttributes {
             uint id = 0;
             bool destroy_on_exit = true;
+            uint render_interval = 500; // Interval in ms at which the render method is called.
         };
         enum AppReturnValues {
             OK = 0,

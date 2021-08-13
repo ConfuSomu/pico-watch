@@ -56,7 +56,7 @@ int main() {
         }
         
         if (g_s.is_sleeping) __wfi();
-        else sleep_ms(app_api.performance_render_interval_get());
-    }
+        else sleep_ms(g_s.foreground_app->app_get_attributes().render_interval);
+    }   
     return 0;
 }
