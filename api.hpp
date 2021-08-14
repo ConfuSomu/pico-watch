@@ -108,12 +108,6 @@ class Api {
         // \param t Pointer to the datetime structure
         // \return true if the call to the SDK was successful, else false.
         bool datetime_set(datetime_t *t);
-        // Get app's current render interval
-        // \return Value in millisec
-        int performance_render_interval_get();
-        // Same spirit as performance_set, the app should use the smallest value possible that does not cause a lack of responsiveness in the app's UI.
-        // \param interval Time to wait in millisec between calls of the app's render function.
-        void performance_render_interval_set(int interval);
         // Get last button pressed, see buttons.hpp for values
         // \return Last button pressed
         uint button_last_get();

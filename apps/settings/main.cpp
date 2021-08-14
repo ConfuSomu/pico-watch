@@ -162,7 +162,6 @@ BaseApp::AppReturnValues app_settings::btnpressed(Api *app_api, uint gpio, unsig
 
 app_settings::app_settings(Api *app_api) {
     app_api->performance_set(Api::perf_modes::LOW_POWER);
-    app_api->performance_render_interval_set(100);
     selected_setting = 0;
     selected = false;
     snprintf(display_setting_name, SIZE_SETTING_NAME, "%s", MAIN_SET_NAMES[0]);

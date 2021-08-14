@@ -68,7 +68,6 @@ BaseApp* app_mgr::app_create(int app_id) {
 
 BaseApp* app_mgr::app_init(int app_id) {
     BaseApp* new_app;
-    app_api.performance_render_interval_set(500); // Reset interval
 
     if (app_id > NUMBER_OF_APPS-1 or app_id < 0) {
         printf("Tried to init app %d", app_id);
@@ -140,7 +139,6 @@ void app_mgr::app_switch_request(int to_appid) {
     if (!g_s.app_switch_requested)
         g_s.app_switch_to_app = to_appid;
     g_s.app_switch_requested = true;
-    app_api.performance_render_interval_set(0); // This will be reset on new app init
 }
 
 void app_mgr::app_switch(BaseApp* app, int new_appid) {
