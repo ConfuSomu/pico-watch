@@ -15,7 +15,7 @@ global_status g_s;
 user_settings g_user;
 Api app_api;
 
-bool repeating_callback(struct repeating_timer *t) {
+bool cb_status_check(struct repeating_timer *t) {
     // Enter shallow sleep mode when needed
     auto time_since_last_press = time_since_button_press();
     if (!g_s.is_sleeping && time_since_last_press > g_user.sleep_delay) {
@@ -39,8 +39,9 @@ int main() {
     printf("~~~==~~~");
     init_buttons();
     app_api.init();
-    struct repeating_timer timer;
-    add_repeating_timer_ms(250, repeating_callback, NULL, &timer); // TODO: Execute on core1
+    
+    struct repeating_timer status_check_timer;
+    add_repeating_timer_ms(250, cb_status_check, NULL, &status_check_timer); // TODO: Execute on core1
 
     g_s.foreground_app = app_mgr::app_init(0);
 
