@@ -3,8 +3,8 @@
 
 #include "buttons.hpp"
 #include "globals.hpp"
-#include "api.hpp"
-#include "app_manager.hpp"
+#include "hal/api.hpp"
+#include "app/app_manager.hpp"
 // From pico-watch.c:
 extern Api app_api;
 

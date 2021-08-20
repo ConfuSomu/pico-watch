@@ -3,7 +3,7 @@
 #include "pico/util/datetime.h"
 
 // Includes also buttons, API and ss_oled
-#include "../../base_app.hpp"
+#include "../../app/base_app.hpp"
 
 #define NUMBER_OF_APPS 3
 #define SIZE_APP_NAME 12

@@ -1,5 +1,5 @@
 #pragma once
-#include "base_app.hpp"
+#include "app/base_app.hpp"
 
 struct global_status {
     BaseApp* foreground_app = 0;

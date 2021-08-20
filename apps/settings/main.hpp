@@ -1,5 +1,5 @@
 #pragma once
-#include "../../base_app.hpp"
+#include "../../app/base_app.hpp"
 #include "strings.hpp"
 
 class app_settings : public BaseApp {

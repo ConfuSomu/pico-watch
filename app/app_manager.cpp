@@ -1,13 +1,13 @@
 #include <algorithm>
 
 #include "app_manager.hpp"
-#include "api.hpp"
-#include "globals.hpp"
+#include "../hal/api.hpp"
+#include "../globals.hpp"
 
 // App classes following:
-#include "apps/main_clock/main.hpp"
-#include "apps/home_menu/main.hpp"
-#include "apps/settings/main.hpp"
+#include "../apps/main_clock/main.hpp"
+#include "../apps/home_menu/main.hpp"
+#include "../apps/settings/main.hpp"
 #define NUMBER_OF_APPS 3
 
 // From pico-watch.c:

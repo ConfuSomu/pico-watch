@@ -6,10 +6,10 @@
 #include "pico/util/datetime.h"
 
 #include "init.hpp"
-#include "api.hpp"
+#include "hal/api.hpp"
 #include "buttons.hpp"
 #include "globals.hpp"
-#include "app_manager.hpp"
+#include "app/app_manager.hpp"
 
 global_status g_s;
 user_settings g_user;

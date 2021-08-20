@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include "pico/util/datetime.h"
-#include "oled/ss_oled.h"
+#include "../oled/ss_oled.h"
 
-#include "buttons.hpp"
+#include "../buttons.hpp"
 
 class Api {
     private:

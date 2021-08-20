@@ -3,7 +3,7 @@
 #include "pico/util/datetime.h"
 
 // Includes also buttons, API and ss_oled
-#include "../../base_app.hpp"
+#include "../../app/base_app.hpp"
 
 class app_main_clock : public BaseApp {
     private:

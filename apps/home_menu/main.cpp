@@ -2,7 +2,7 @@
 #include "pico/stdlib.h"
 
 #include "../../globals.hpp"
-#include "../../app_manager.hpp"
+#include "../../app/app_manager.hpp"
 #include "main.hpp"
 
 extern bool rtc_get_datetime(datetime_t *t);
