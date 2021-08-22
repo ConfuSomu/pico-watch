@@ -22,6 +22,11 @@ class BaseApp {
         // where app_attribues is an instance of AppAttributes
 
         virtual AppReturnValues render(Api *app_api) = 0; // Has to be implemented
+        // Called when a button is released.
+        // \param delta The time since the button has been last released. Delta is in ms, from time_since_button_press().
         virtual AppReturnValues btnpressed(Api *app_api, uint gpio, unsigned long delta) {return AppReturnValues::OK;};
+        // Called when a button is released.
+        // \param delta The time since the button has been pressed. Delta is in ms, from time_since_button_press().
+        virtual AppReturnValues btnreleased(Api *app_api, uint gpio, unsigned long delta) {return AppReturnValues::OK;};
         virtual AppReturnValues bgrefresh(Api *app_api, bool in_foreground) {return AppReturnValues::OK;};
 };

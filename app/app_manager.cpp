@@ -93,6 +93,10 @@ void app_mgr::app_btnpressed(BaseApp* app, uint gpio, unsigned long delta) {
     app_act_on_return_value(app, app->btnpressed(&app_api, gpio, delta));
 }
 
+void app_mgr::app_btnreleased(BaseApp* app, uint gpio, unsigned long delta) {
+    app_act_on_return_value(app, app->btnreleased(&app_api, gpio, delta));
+}
+
 void app_mgr::app_destroy(BaseApp* to_erase) {
     auto erase_it = std::find(open_apps.begin(), open_apps.end(), to_erase); // "it" meaning iterator
     if (erase_it != open_apps.end()) {

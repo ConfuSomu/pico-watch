@@ -16,6 +16,9 @@ namespace app_mgr {
     // Delta is in ms, from time_since_button_press()
     void app_btnpressed(BaseApp* app, uint gpio, unsigned long delta);
 
+    // Call when a button is released
+    void app_btnreleased(BaseApp* app, uint gpio, unsigned long delta);
+
     // This should only be called by pico-watch.cpp before app rendering, to chage the current app.
     void app_switch(BaseApp* app, int new_appid);
 
