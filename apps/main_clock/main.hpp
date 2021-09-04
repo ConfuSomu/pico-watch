@@ -7,10 +7,6 @@
 
 class app_main_clock : public BaseApp {
     private:
-        bool *ask_user_choice;
-        int *user_choice;
-        const char *choices[10] = {"One", "Close (fg)", "Quit (fg)", "Close (bg)", "Quit (bg)"};
-
         void time_as_str(char *buf, uint buf_size, const datetime_t *t);
         void date_as_str(char *buf, uint buf_size, const datetime_t *t);
         void show_datetime(Api *app_api);

@@ -4,7 +4,7 @@
 #include "main.hpp"
 
 // TODO in this app
-// - No need for ask_user_choice and user_choice to be a ptr as the app is now encapsulated in a class.
+// - 
 
 // Time as string
 // Adapted from pico-sdk/scr/common/pico_util/datetime.c
@@ -55,49 +55,25 @@ void app_main_clock::show_datetime(Api *app_api) {
 BaseApp::AppReturnValues app_main_clock::render(Api *app_api) {
     app_api->gui_header_text("Test clock", 17);
     show_datetime(app_api);
-    if (*ask_user_choice) {
-        *user_choice = app_api->gui_popup_strchoice("Ohh!", "Make a good choice:", choices, 5, 0, -1, *user_choice);
-        *ask_user_choice = false;
-    }
-    app_api->gui_footer_text(choices[*user_choice],0,1);
-
-    if (*user_choice == 1)
-        return AppReturnValues::CLOSE;
-    else if (*user_choice == 2)
-        return AppReturnValues::QUIT;
 
     return AppReturnValues::OK;
 }
 
 // Interpretation of button inputs
 BaseApp::AppReturnValues app_main_clock::btn_pressed(Api *app_api, uint gpio, unsigned long delta) {
-    if (gpio == BUTTON_MODE)
-        *ask_user_choice = true;
     return AppReturnValues::OK;
 }
 
 // Initlisation of the app.
 app_main_clock::app_main_clock(Api *app_api) {
     app_api->performance_set(Api::perf_modes::LOW_POWER);
-
-    ask_user_choice = new bool; *ask_user_choice = false;
-    user_choice = new int; *user_choice = 0;
-    // if (!(user_choice or ask_user_choice))
-        // return Api::app_init_return_status::MALLOC_FAILED;
-    // return Api::app_init_return_status::OK;
 }
 
 // Processor intensive operations and functions related to drawing to the screen should only be done when the app is in_foreground(=1). This function is only called when the app is init.
 BaseApp::AppReturnValues app_main_clock::bgrefresh(Api *app_api, bool in_foreground) {
-    if (*user_choice == 3)
-        return AppReturnValues::CLOSE;
-    else if (*user_choice == 4)
-        return AppReturnValues::QUIT;
     return AppReturnValues::OK;
 }
 
 // Destruction of app, deinitlisation should be done here. This is only called if the app's APPS_DESTROY_ON_EXIT is set to 1. When it is not a "service" app.
 app_main_clock::~app_main_clock() {
-    delete ask_user_choice; ask_user_choice = 0;
-    delete user_choice; user_choice = 0;
 }
