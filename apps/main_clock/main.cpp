@@ -20,7 +20,7 @@ void app_main_clock::time_as_str(char *buf, uint buf_size, const datetime_t *t) 
     }
     snprintf(buf,
             buf_size,
-            "%d:%02d:%02d ",
+            "%02d:%02d ",
             hour, t->min, t->sec);
 };
 
@@ -43,13 +43,16 @@ void app_main_clock::show_datetime(Api *app_api) {
 
     // time
     time_as_str(datetime_str, sizeof(datetime_buf), &t);
-    app_api->display_write_string(0,10,3, datetime_str, FONT_12x16, 0, 1);
+    app_api->display_write_string(0,25,3, datetime_str, FONT_12x16, 0, 1);
+
+    snprintf(datetime_str, sizeof(datetime_buf), "%02d", t.sec);
+    app_api->display_write_string(0,87,4, datetime_str, FONT_8x8, 0, 1);
 
     // for 12 hour time
     if (!g_user.time_format) {
         bool is_pm = !(t.hour < 12);
         const char *indicator = is_pm? "PM" : "AM";
-        app_api->display_write_string(0,100,2, indicator, FONT_8x8, 0, 1);
+        app_api->display_write_string(0,98,2, indicator, FONT_8x8, 0, 1);
     }
 
     // date
