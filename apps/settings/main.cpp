@@ -138,7 +138,7 @@ BaseApp::AppReturnValues app_settings::render(Api *app_api) {
     return AppReturnValues::OK;
 }
 
-BaseApp::AppReturnValues app_settings::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
+BaseApp::AppReturnValues app_settings::btn_pressed(Api *app_api, uint gpio, unsigned long delta) {
     switch (gpio) {
         case BUTTON_SELECT:
             selected = true;

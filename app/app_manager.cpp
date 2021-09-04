@@ -90,11 +90,11 @@ void app_mgr::app_render(BaseApp* app) {
 }
 
 void app_mgr::app_btnpressed(BaseApp* app, uint gpio, unsigned long delta) {
-    app_act_on_return_value(app, app->btnpressed(&app_api, gpio, delta));
+    app_act_on_return_value(app, app->btn_pressed(&app_api, gpio, delta));
 }
 
 void app_mgr::app_btnreleased(BaseApp* app, uint gpio, unsigned long delta) {
-    app_act_on_return_value(app, app->btnreleased(&app_api, gpio, delta));
+    app_act_on_return_value(app, app->btn_released(&app_api, gpio, delta));
 }
 
 void app_mgr::app_destroy(BaseApp* to_erase) {

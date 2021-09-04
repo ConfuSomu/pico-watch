@@ -23,7 +23,7 @@ class app_main_clock : public BaseApp {
 
         app_main_clock(Api *app_api);
         AppReturnValues render(Api *app_api);
-        AppReturnValues btnpressed(Api *app_api, uint gpio, unsigned long delta);
+        AppReturnValues btn_pressed(Api *app_api, uint gpio, unsigned long delta);
         AppReturnValues bgrefresh(Api *app_api, bool in_foreground);
         ~app_main_clock();
 };

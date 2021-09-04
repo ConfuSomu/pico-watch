@@ -36,7 +36,7 @@ BaseApp::AppReturnValues app_home_menu::render(Api *app_api) {
 
 // Example of how button inputs could be interpreted.
 // Drawing on screen should be done in the render function.
-BaseApp::AppReturnValues app_home_menu::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
+BaseApp::AppReturnValues app_home_menu::btn_pressed(Api *app_api, uint gpio, unsigned long delta) {
     switch (gpio) {
         case BUTTON_SELECT:
             app_mgr::app_switch_request(selected_app);

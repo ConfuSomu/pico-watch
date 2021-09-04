@@ -70,7 +70,7 @@ BaseApp::AppReturnValues app_main_clock::render(Api *app_api) {
 }
 
 // Interpretation of button inputs
-BaseApp::AppReturnValues app_main_clock::btnpressed(Api *app_api, uint gpio, unsigned long delta) {
+BaseApp::AppReturnValues app_main_clock::btn_pressed(Api *app_api, uint gpio, unsigned long delta) {
     if (gpio == BUTTON_MODE)
         *ask_user_choice = true;
     return AppReturnValues::OK;

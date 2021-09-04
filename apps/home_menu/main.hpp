@@ -25,7 +25,7 @@ class app_home_menu : public BaseApp {
         
         app_home_menu(Api *app_api);
         AppReturnValues render(Api *app_api);
-        AppReturnValues btnpressed(Api *app_api, uint gpio, unsigned long delta);
+        AppReturnValues btn_pressed(Api *app_api, uint gpio, unsigned long delta);
         AppReturnValues bgrefresh(Api *app_api, bool in_foreground);
         ~app_home_menu();
 };
