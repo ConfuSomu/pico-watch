@@ -35,7 +35,7 @@ void app_main_clock::date_as_str(char *buf, uint buf_size, const datetime_t *t) 
             DATETIME_DOWS[t->dotw]);
 };
 
-void app_main_clock::show_datetime(Api *app_api) {
+BaseApp::AppReturnValues app_main_clock::render(Api *app_api) {
     char datetime_buf[256];
     char *datetime_str = &datetime_buf[0];
     datetime_t t;
@@ -57,12 +57,7 @@ void app_main_clock::show_datetime(Api *app_api) {
 
     // date
     date_as_str(datetime_str, sizeof(datetime_buf), &t);
-    app_api->gui_footer_text((std::string)datetime_str);
-}
-
-BaseApp::AppReturnValues app_main_clock::render(Api *app_api) {
-    app_api->gui_header_text("Test clock", 17);
-    show_datetime(app_api);
+    app_api->gui_footer_text(datetime_str);
 
     return AppReturnValues::OK;
 }

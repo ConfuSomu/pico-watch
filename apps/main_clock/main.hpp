@@ -9,7 +9,6 @@ class app_main_clock : public BaseApp {
     private:
         void time_as_str(char *buf, uint buf_size, const datetime_t *t);
         void date_as_str(char *buf, uint buf_size, const datetime_t *t);
-        void show_datetime(Api *app_api);
 
         AppAttributes app_attributes = {1, true};
     public:
