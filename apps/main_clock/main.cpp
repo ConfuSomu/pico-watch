@@ -2,6 +2,8 @@
 #include "pico/stdlib.h"
 
 #include "main.hpp"
+// For time format:
+#include "../../globals.hpp"
 
 // TODO in this app
 // - 
@@ -9,12 +11,17 @@
 // Time as string
 // Adapted from pico-sdk/scr/common/pico_util/datetime.c
 void app_main_clock::time_as_str(char *buf, uint buf_size, const datetime_t *t) {
+    int hour;
+    if (g_user.time_format) // 24 hour format
+        hour = t->hour;
+    else { // 12 hour format
+        hour = t->hour % 12;
+        if (hour == 0) hour = 12;
+    }
     snprintf(buf,
             buf_size,
             "%d:%02d:%02d ",
-            t->hour,
-            t->min,
-            t->sec);
+            hour, t->min, t->sec);
 };
 
 void app_main_clock::date_as_str(char *buf, uint buf_size, const datetime_t *t) {
@@ -37,6 +44,13 @@ void app_main_clock::show_datetime(Api *app_api) {
     // time
     time_as_str(datetime_str, sizeof(datetime_buf), &t);
     app_api->display_write_string(0,10,3, datetime_str, FONT_12x16, 0, 1);
+
+    // for 12 hour time
+    if (!g_user.time_format) {
+        bool is_pm = !(t.hour < 12);
+        const char *indicator = is_pm? "PM" : "AM";
+        app_api->display_write_string(0,100,2, indicator, FONT_8x8, 0, 1);
+    }
 
     // date
     date_as_str(datetime_str, sizeof(datetime_buf), &t);
