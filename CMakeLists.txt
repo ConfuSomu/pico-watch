@@ -42,21 +42,17 @@ add_executable(pico-watch
 	pico-watch.cpp
         app/app_manager.cpp
         init.cpp
-        init.hpp
         buttons.cpp
-        buttons.hpp
         hal/api.cpp
         apps/home_menu/main.cpp
-        apps/home_menu/main.hpp
         apps/main_clock/main.cpp
-        apps/main_clock/main.hpp
         apps/settings/main.cpp
-        apps/settings/main.hpp
         apps/tests/main.cpp
 	)
 
 pico_set_program_name(pico-watch "pico-watch")
 pico_set_program_version(pico-watch "0.1")
+
 # To access uart on a Pico connected directly to a Raspberry Pi (4 B): `minicom -b 115200 -o -D /dev/ttyS0`
 pico_enable_stdio_uart(pico-watch 1)
 
