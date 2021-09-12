@@ -8,7 +8,8 @@
 #include "../apps/main_clock/main.hpp"
 #include "../apps/home_menu/main.hpp"
 #include "../apps/settings/main.hpp"
-#define NUMBER_OF_APPS 3
+#include "../apps/tests/main.hpp"
+#define NUMBER_OF_APPS 4
 
 // From pico-watch.c:
 extern Api app_api;
@@ -53,6 +54,7 @@ BaseApp* app_mgr::app_create(int app_id) {
         case 0: new_app = new app_home_menu(&app_api); break;
         case 1: new_app = new app_main_clock(&app_api); break;
         case 2: new_app = new app_settings(&app_api); break;
+        case 3: new_app = new app_tests(&app_api); break;
         default: __breakpoint(); return open_apps.front(); // Should be home_menu
     }
 
