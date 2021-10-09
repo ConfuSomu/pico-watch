@@ -44,6 +44,7 @@ add_executable(pico-watch
         init.cpp
         buttons.cpp
         hal/api.cpp
+        hal/ui/widget/list_widget.cpp
         apps/home_menu/main.cpp
         apps/main_clock/main.cpp
         apps/settings/main.cpp

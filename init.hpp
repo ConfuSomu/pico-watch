@@ -1,5 +1,4 @@
-#ifndef __INIT_H__
-#define __INIT_H__
+#pragma once
 
 // To modify the I2C port used, change the `#define I2C_PORT` in "oled/BitBang_I2C.c"
 // Pin numbers are GPIO pins.
@@ -7,6 +6,9 @@
 #define SCL_PIN 7
 #define RESET_PIN -1
 #define OLED_DEFAULT_CONTRAST 40
+
+#define OLED_WIDTH 128
+#define OLED_HEIGHT 64
 
 // Initial date & time
 // The idea is to have the compiler set the date at compile-time.
@@ -27,5 +29,3 @@
 void init_all();
 // Init onboard RTC
 void init_rtc();
-
-#endif

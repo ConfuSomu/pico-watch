@@ -5,6 +5,7 @@
 
 class app_tests : public BaseApp {
     private:
+        int m_current_screen = 0;
         AppAttributes app_attributes = {3, true};
     public:
         const AppAttributes& app_get_attributes() {
