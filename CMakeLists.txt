@@ -52,6 +52,9 @@ add_executable(pico-watch
         apps/main_clock/main.hpp
         apps/settings/main.cpp
         apps/settings/main.hpp
+        apps/game_falldown/main.cpp
+        apps/game_falldown/ball.cpp
+        apps/game_falldown/platform.cpp
 	)
 
 pico_set_program_name(pico-watch "pico-watch")

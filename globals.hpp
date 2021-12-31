@@ -24,5 +24,8 @@ struct user_settings {
     bool time_format = true;
 };
 
+#define DISPLAY_WIDTH 128
+#define DISPLAY_HEIGHT 64
+
 extern global_status g_s;
 extern user_settings g_user;

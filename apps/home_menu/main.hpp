@@ -5,12 +5,12 @@
 // Includes also buttons, API and ss_oled
 #include "../../app/base_app.hpp"
 
-#define NUMBER_OF_APPS 3
+#define NUMBER_OF_APPS 4
 #define SIZE_APP_NAME 12
 
 class app_home_menu : public BaseApp {
     private:
-        const char *APPS_NAME[NUMBER_OF_APPS] = {"Home", "Clock", "Settings"};
+        const char *APPS_NAME[NUMBER_OF_APPS] = {"Home", "Clock", "Settings", "Falldown"};
         int selected_app = 0;
         char display_app_name[SIZE_APP_NAME];
 
