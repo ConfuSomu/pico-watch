@@ -53,17 +53,6 @@ I use a GDB script that allows debugging STL containers. The script is available
   - Use `print malloc(500)` to debug memory allocation failures. You can malloc more than `PICO_HEAP_SIZE` as this only guaranties a minimum heap size, see [here](https://www.raspberrypi.org/forums/viewtopic.php?f=144&t=318030).
   - `dump binary value <filename> <symbol>` allows writing the contents of a variable to disk. The contents can later be written back into memory.
 
-To-do
-----
-
-- [x] Check method and function names in documentation.
-- [x] Check links in docs to make sure that they are relevant and not dead.
-- [x] Fix the TODOs!
-- [ ] Add licence of libraries in "Libraries used" section.
-- [ ] Add project license.
-
-See file under `docs/todo.md` for more tasks.
-
 Libraries used
 ----
 
